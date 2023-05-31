@@ -4,6 +4,6 @@
 **/simulation/
 **/*.bak
 **/*.bsf
-**/*.qpf
 **/*.qsf
+**/*.qws
 **/*.vwf

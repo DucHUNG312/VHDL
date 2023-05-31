@@ -1,0 +1,4 @@
+‘Generate statement’ is used for creating loops in concurrent assignments. These loops are very different from software loops. 
+Suppose ‘for i = 1 to N’ is a loop, then, in software ‘i’ will be assigned one value at a time i.e. first i=1, then next cycle i=2 and so on. 
+Whereas in VHDL, N logic will be implement for this loop, which will execute in parallel. Also, in software, ‘N’ cycles are required to complete the loop, 
+whereas in VHDL the loop will execute in one cycle.
