@@ -1,3 +1,1 @@
-##[Study VHDL](https://vhdlguide.readthedocs.io/en/latest/index.html)
-
----
+## [Study VHDL](https://vhdlguide.readthedocs.io/en/latest/index.html)
