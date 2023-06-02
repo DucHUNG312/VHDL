@@ -23,7 +23,7 @@
   - Next states depend on current states and current external inputs.
 
 <div align="center">
-    <img src="/images/regular.jpg" alt="Regular Moore machine">
+    <img src="images/regular.jpg" alt="Regular Moore machine">
      <figcaption>Regular Moore machine</figcaption>
 </div>
 <br>
@@ -33,7 +33,7 @@
   - Next states depend on time along with current states and current external inputs.
 
 <div align="center">
-    <img src="/images/timed.jpg" alt="Timed Moore machine">
+    <img src="images/timed.jpg" alt="Timed Moore machine">
     <figcaption>Timed Moore machine : next state depends on time as well</figcaption>
 </div>
 <br>
@@ -43,7 +43,7 @@
   - Next states depend current states, current external input, current internal inputs (i.e. previous outputs feedback as inputs to system) and time (optional).
 
 <div align="center">
-    <img src="/images/recursive.jpg" alt="Recursive Moore machine">
+    <img src="images/recursive.jpg" alt="Recursive Moore machine">
      <figcaption>Recursive Moore machine : output ‘z’ depends on output i.e. feedback required</figcaption>
 </div>
 
