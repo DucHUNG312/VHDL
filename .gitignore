@@ -7,3 +7,8 @@
 **/*.qsf
 **/*.qws
 **/*.vwf
+**/*.rpt
+
+**/References/
+**/*.toml
+**/*.vhdpproj
