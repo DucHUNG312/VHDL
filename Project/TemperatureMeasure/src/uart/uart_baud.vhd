@@ -51,7 +51,7 @@ entity uart_baud is
         clk:      in  std_ulogic;
         reset:    in  std_ulogic;
         rx_tick:  out std_ulogic;
-        tx_tick:  out std_ulogic;
+        tx_tick:  out std_ulogic
     );
 end entity uart_baud;
 

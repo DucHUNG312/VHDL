@@ -1,7 +1,7 @@
 -- ==================================================================================
 -- AUTHOR:          Le Vu Duc Hung
 --
--- DATE:            13/06/2023
+-- DATE:            12/06/2023
 --
 -- FILE:            uart_rx.vhd
 --
@@ -42,7 +42,7 @@ use ieee.numeric_std.all;
 use ieee.math_real.all;
 use work.uart_pkg.all;
 
-entity uart_tx is
+entity uart_rx is
     generic(
         config: uart_config := uart_default_config
     );
@@ -52,13 +52,13 @@ entity uart_tx is
         rx_baud_tick:         in std_ulogic;
         rx:                   in std_ulogic;
 
-        data_stream_out:      out std_ulogic_vector(config.data_bits downto 0);
-        data_stream_out_stb:  out std_ulogic;
+        data_stream_out:      out std_ulogic_vector(config.data_bits - 1 downto 0);
+        data_stream_out_stb:  out std_ulogic -- indicates the validity of the received data on the data_stream_out vector. When this signal is asserted, it indicates that the data on data_stream_out is stable and can be read or processed
     );
 begin
-end entity uart_tx;
+end entity uart_rx;
 
-architecture rtl of uart_tx is
+architecture rtl of uart_rx is
     type uart_rx_states is (rx_get_start_bit, rx_get_data, rx_get_stop_bit);
 
 -- =====================================================================================================================================

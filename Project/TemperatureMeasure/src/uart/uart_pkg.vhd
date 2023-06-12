@@ -30,6 +30,7 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.math_real.all;
 use ieee.numeric_std.all;
 
 package uart_pkg is
@@ -59,22 +60,66 @@ package uart_pkg is
     
     --================================= UART_TX ===================================--
     component uart_tx is
-        
+        generic(
+            config: uart_config := uart_default_config
+        );
+        port (
+            clk:                  in std_ulogic;
+            reset:                in std_ulogic;
+            tx_baud_tick:         in std_ulogic;
+            data_stream_in:       in std_ulogic_vector(config.data_bits - 1 downto 0);
+            data_stream_in_std:   in std_ulogic;
+            data_stream_in_ack:   out std_ulogic;
+            tx:                   out std_ulogic
+        );
     end component;
     
     --================================= UART_RX ===================================--
     component uart_rx is
-        
+        generic(
+            config: uart_config := uart_default_config
+        );
+        port(
+            clk:                  in std_ulogic;
+            reset:                in std_ulogic;
+            rx_baud_tick:         in std_ulogic;
+            rx:                   in std_ulogic;
+
+            data_stream_out:      out std_ulogic_vector(config.data_bits - 1 downto 0);
+            data_stream_out_stb:  out std_ulogic 
+        );
     end component;
     
     --================================= UART_FIFO ===================================--
     component uart_fifo is
-        
+        generic(
+            config: uart_config := uart_default_config
+        );
+        port(
+            clk:          in std_ulogic;
+            reset:        in std_ulogic;
+            write_data:   in std_ulogic_vector(config.fifo_width - 1 downto 0);
+            read_data:    in std_ulogic_vector(config.fifo_width - 1 downto 0);
+            write_enable: in std_ulogic;
+            read_enable:  in std_ulogic;
+            
+            full :        out std_ulogic;
+            empty:        out std_ulogic;
+            level:        out std_ulogic_vector(integer(ceil(log2(real(config.fifo_depth)))) - 1 downto 0)
+        );
     end component;
     
     --================================= UART_BAUD ===================================--
     component uart_baud is
-        
+        generic (
+            config:   uart_config := uart_default_config
+        );
+        port(
+            clk:      in  std_ulogic;
+            reset:    in  std_ulogic;
+            rx_tick:  out std_ulogic;
+            tx_tick:  out std_ulogic
+        );
     end component;
     
     --================================= UART_TOP ===================================--
