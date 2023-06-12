@@ -1,5 +1,7 @@
 -- =============================================================================
--- AUTHORS:   Le Vu Duc Hung
+-- AUTHOR:    Le Vu Duc Hung
+--
+-- DATE:      12/06/2023
 --
 -- FILE:      uart_baud.vhd
 -- =============================================================================
@@ -25,3 +27,130 @@
 -- OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 -- WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -- =============================================================================
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+use ieee.math_real.all;
+use work.uart_pkg.all;
+
+entity uart_baud is
+    generic (
+        config:   uart_config := uart_default_config
+    );
+    port(
+        clk:      in  std_ulogic;
+        reset:    in  std_ulogic;
+        rx_tick:  out std_ulogic;
+        tx_tick:  out std_ulogic;
+    );
+end entity uart_baud;
+
+architecture rtl of uart_baud is
+    --================================= Constants =====================================--
+    constant c_tx_div:       integer := config.clock_frequency / config.baud_rate;
+    constant c_rx_div:       integer := config.clock_frequency / (config.baud_rate * 16);
+    constant c_tx_div_width: integer := integer(log2(real(c_tx_div))) + 1;
+    constant c_rx_div_width: integer := integer(log2(real(c_rx_div))) + 1;
+
+    --================================= Signals =====================================--
+    signal tx_baud_counter: unsigned(c_tx_div_width - 1 downto 0) := (others => '0');
+    signal tx_baud_tick:    std_ulogic                            := '0';
+    signal rx_baud_counter: unsigned(c_rx_div_width - 1 downto 0) := (others => '0');
+    signal rx_baud_tick:    std_ulogic                            := '0';
+begin
+    -- OVERSAMPLE_CLOCK_DIVIDER: Generate an oversampled tick (baud * 16)
+    OVERSAMPLE_CLOCK_DIVIDER: process(clk)
+    begin
+        if rising_edge(clk) then
+            if reset = '1' then
+                rx_baud_counter <= (others => '0');
+                rx_baud_tick <= '0';
+            else
+                if rx_baud_counter = c_rx_div then
+                    rx_baud_counter <= (others => '0');
+                    rx_baud_tick <= '1';
+                else
+                    rx_baud_counter <= rx_baud_counter + 1;
+                    rx_baud_tick <= '0';
+                end if;
+            end if;
+        end if;
+    end process; -- OVERSAMPLE_CLOCK_DIVIDER
+
+    -- TX_CLOCK_DIVIDER: Generate baud ticks at the required rate based on the input clock frequency and baud rate
+    TX_CLOCK_DIVIDER: process(clk)
+    begin
+        if rising_edge(clk) then
+            if reset = '1' then
+                tx_baud_counter <= (others => '0');
+                tx_baud_tick <= '0';
+            else 
+                if tx_baud_counter = c_tx_div then
+                    tx_baud_counter <= (others => '0');
+                    tx_baud_tick <= '1';
+                else
+                    tx_baud_counter <= tx_baud_counter + 1;
+                    tx_baud_tick <= '0';
+                end if;
+            end if;
+        end if;
+    end process; -- TX_CLOCK_DIVIDER
+
+    rx_tick <= rx_baud_tick;
+    tx_tick <= tx_baud_tick;
+    
+end architecture rtl;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+end architecture rtl;

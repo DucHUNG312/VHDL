@@ -1,5 +1,7 @@
 -- =============================================================================
--- AUTHORS:   Le Vu Duc Hung
+-- AUTHOR:    Le Vu Duc Hung
+--
+-- DATE:      12/06/2023
 --
 -- FILE:      uart_pkg.vhd
 -- =============================================================================
@@ -26,202 +28,86 @@
 -- WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -- =============================================================================
 
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
+library ieee;
+use ieee.std_ulogic_1164.all;
+use ieee.numeric_std.all;
 
 package uart_pkg is
     
-    --================================= Constants =================================--
-    constant uart_8N1:        STD_ULOGIC_VECTOR(7 downto 0) := "10000100"; -- 132
-    constant crt_use_parity:  INTEGER := 0;
-    constant crt_even_parity: INTEGER := 1;
-    
     --================================= Types =====================================--
-    type uart_generics is record
-        clock_frequency:    POSITIVE; -- clock frequency
-        delay:              TIME; -- gate delay for simulation purposes
-        asynchronous_reset: BOOLEAN; -- use asynchronous reset if true
-    end record;
+    type uart_config is record
+        clock_frequency:    positive;  -- clock frequency (50MHz)
+        baud_rate:          positive;  -- desired baud rate (9600)
+        data_bits:          positive;  -- Number of data bits per frame
+        stop_bits:          positive;  -- Number of stop bits
+        clock_divider:      positive;  -- Clock divider for baud rate generation
+        fifo_width:         positive;
+        fifo_depth:         positive;
+    end record uart_config;
+    
+    --================================= Constants =================================--
+    constant uart_default_config: uart_config := (
+        clock_frequency =>    50000000,
+        baud_rate       =>    19200,
+        data_bits       =>    8,
+        stop_bits       =>    1,
+        clock_divider   =>    163, -- 50000000/(16*19200)
+        fifo_width      =>    32,
+        fifo_depth      =>    1024
+    );
     
     --================================= Functions ===================================--
-    function parity(slv: STD_ULOGIC_VECTOR; even: BOOLEAN)     return STD_ULOGIC;
-    function parity(slv: STD_ULOGIC_VECTOR; even: STD_ULOGIC)  return STD_ULOGIC;
-    function crt_stop_bits(crt: STD_ULOGIC_VECTOR(7 downto 0)) return INTEGER;
-    function crt_data_bits(crt: STD_ULOGIC_VECTOR(7 downto 0)) return INTEGER;
+    function get_fifo_level(write_pointer: unsigned; read_pointer: unsigned; depth: positive) return integer;
     
     --================================= UART_TX ===================================--
     component uart_tx is
-        generic(
-            g:       uart_generics;
-            N:       POSITIVE;
-            format:  STD_ULOGIC_VECTOR(7 downto 0) := uart_8N1;
-            use_cfg: BOOLEAN
-        );
-        port(
-            clk:    in STD_ULOGIC;
-            rst:    in STD_ULOGIC;
-            baud:   in STD_ULOGIC;
-            ctr:    in STD_ULOGIC_VECTOR(format'range);
-            ctr_we: in STD_ULOGIC;
-            we:     in STD_ULOGIC;
-            di:     in STD_ULOGIC_VECTOR(N-1 downto 0);
-            
-            cr:     out STD_ULOGIC;
-            tx:     out STD_ULOGIC;
-            ok:     out STD_ULOGIC
-        );
+        
     end component;
     
     --================================= UART_RX ===================================--
     component uart_rx is
-        generic(
-            g:       uart_generics;
-            N:       POSITIVE;
-            D:       POSITIVE;
-            format:  STD_ULOGIC_VECTOR(7 downto 0) := uart_8N1;
-            use_cfg: BOOLEAN
-        );
-        port(
-            clk:    in STD_ULOGIC;
-            rst:    in STD_ULOGIC;
-            baud:   in STD_ULOGIC;
-            sample: in STD_ULOGIC;
-            ctr:    in STD_ULOGIC_VECTOR(format'range);
-            ctr_we: in STD_ULOGIC;
-            rx:     in STD_ULOGIC;
-            
-            cr:     out STD_ULOGIC;
-            failed: out STD_ULOGIC_VECTOR(1 downto 0);
-            we:     out STD_ULOGIC;
-            do:     out STD_ULOGIC_VECTOR(N-1 downto 0)
-        );
+        
     end component;
     
     --================================= UART_FIFO ===================================--
     component uart_fifo is
-        generic (
-            g:           uart_generics;
-            data_width:  POSITIVE;
-            fifo_depth:  POSITIVE;
-            read_first:  BOOLEAN := true);
-        port (
-            clk: in STD_ULOGIC;
-            rst: in STD_ULOGIC;
-            di:  in STD_ULOGIC_VECTOR(data_width - 1 downto 0);
-            we:  in STD_ULOGIC;
-            re:  in STD_ULOGIC;
-            do:  out STD_ULOGIC_VECTOR(data_width - 1 downto 0);
-
-            -- Optional
-            full:  out STD_ULOGIC := '0';
-            empty: out STD_ULOGIC := '1');
+        
     end component;
     
     --================================= UART_BAUD ===================================--
     component uart_baud is -- Generates a pulse at the sample rate and baud
-        generic(
-            g:    uart_generics;
-            init: INTEGER;
-            N:    POSITIVE := 16;
-            D:    POSITIVE := 3
-        );
-        port(
-            clk:    in STD_ULOGIC;
-            reset:  in STD_ULOGIC;
-            we:     in STD_ULOGIC;
-            cnt:    in STD_ULOGIC_VECTOR(N-1 downto 0);
-            cr:     in STD_ULOGIC := '0';
-            sample: out STD_ULOGIC;
-            baud:   out STD_ULOGIC
-        );
+        
     end component;
     
     --================================= UART_TOP ===================================--
     component uart_top is
-        generic (
-            clock_frequency:    POSITIVE; -- clock frequency of module clock
-            delay:              TIME;     -- gate delay for simulation purposes
-            asynchronous_reset: BOOLEAN;  -- use asynchronous reset if true
-            baud:               POSITIVE := 115200;
-            format:             STD_ULOGIC_VECTOR(7 downto 0) := uart_8N1;
-            fifo_depth:         NATURAL := 0;
-            use_cfg:            BOOLEAN := false;
-            use_tx:             BOOLEAN := true;
-            use_rx:             BOOLEAN := true
-        );
-        port (
-            clk:             in STD_ULOGIC;
-            rst:             in STD_ULOGIC;
-            tx_fifo_we:      in STD_ULOGIC;
-            tx_fifo_data:    in STD_ULOGIC_VECTOR(7 downto 0);
-            rx:              in STD_ULOGIC;
-            rx_fifo_re:      in STD_ULOGIC;
-            reg:             in STD_ULOGIC_VECTOR(15 downto 0);
-            clock_reg_tx_we: in STD_ULOGIC;
-            clock_reg_rx_we: in STD_ULOGIC;
-            control_reg_we:  in STD_ULOGIC;
-
-            tx:              out STD_ULOGIC;
-            tx_fifo_full:    out STD_ULOGIC;
-            tx_fifo_empty:   out STD_ULOGIC;
-            rx_fifo_full:    out STD_ULOGIC;
-            rx_fifo_empty:   out STD_ULOGIC;
-            rx_fifo_data:    out STD_ULOGIC_VECTOR(7 downto 0)
-        );
+        
     end component;
     
     --================================= UART_TB ===================================--
     component uart_tb is
-        generic(g: uart_generics);
+        
     end component;
     
 end package uart_pkg;
 
 
-
-
 package body uart_pkg is
-    
-    function parity(slv: STD_ULOGIC_VECTOR; even: BOOLEAN) return STD_ULOGIC is
-        variable z: STD_ULOGIC := '0';
+       
+    function get_fifo_level(write_pointer: unsigned; read_pointer: unsigned; depth: positive) return integer is
     begin
-        if NOT even then
-            z := '1';
+        if write_pointer > read_pointer then
+            return to_integer(write_pointer - read_pointer);
+        elsif write_pointer = read_pointer then
+            return 0;
+        else
+            return (((depth) - to_integer(read_pointer)) + to_integer(write_pointer));
         end if;
-        for i in slv'range loop
-            z := z XOR slv(i);
-        end loop;
-        return z;
-    end function parity;
-    
-    
-    function parity(slv: STD_ULOGIC_VECTOR; even: STD_ULOGIC)  return STD_ULOGIC is
-        variable z: BOOLEAN := false;
-    begin
-        if even = '1' then
-            z := true;
-        end if;
-        return parity(slv, z);
-    end function parity;
-    
-    
-    function crt_stop_bits(crt: STD_ULOGIC_VECTOR(7 downto 0)) return INTEGER is
-        variable ii: STD_ULOGIC_VECTOR(1 downto 0);
-    begin
-        ii := crt(3 downto 2);
-        return to_integer(UNSIGNED(ii));
-    end function crt_stop_bits;
-    
-    
-    function crt_data_bits(crt: STD_ULOGIC_VECTOR(7 downto 0)) return INTEGER is
-        variable ii: STD_ULOGIC_VECTOR(3 downto 0);
-    begin
-        ii := crt(7 downto 4);
-        return to_integer(UNSIGNED(ii));
-    end function crt_data_bits;
+    end function get_fifo_level;
 
 end package body uart_pkg;
+
+
 
 
 
