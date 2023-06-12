@@ -29,7 +29,7 @@
 -- =============================================================================
 
 library ieee;
-use ieee.std_ulogic_1164.all;
+use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 package uart_pkg is
@@ -39,8 +39,7 @@ package uart_pkg is
         clock_frequency:    positive;  -- clock frequency (50MHz)
         baud_rate:          positive;  -- desired baud rate (9600)
         data_bits:          positive;  -- Number of data bits per frame
-        stop_bits:          positive;  -- Number of stop bits
-        clock_divider:      positive;  -- Clock divider for baud rate generation
+        bit_spacing:        positive; 
         fifo_width:         positive;
         fifo_depth:         positive;
     end record uart_config;
@@ -50,8 +49,7 @@ package uart_pkg is
         clock_frequency =>    50000000,
         baud_rate       =>    19200,
         data_bits       =>    8,
-        stop_bits       =>    1,
-        clock_divider   =>    163, -- 50000000/(16*19200)
+        bit_spacing     =>    16,
         fifo_width      =>    32,
         fifo_depth      =>    1024
     );
@@ -75,17 +73,12 @@ package uart_pkg is
     end component;
     
     --================================= UART_BAUD ===================================--
-    component uart_baud is -- Generates a pulse at the sample rate and baud
+    component uart_baud is
         
     end component;
     
     --================================= UART_TOP ===================================--
     component uart_top is
-        
-    end component;
-    
-    --================================= UART_TB ===================================--
-    component uart_tb is
         
     end component;
     

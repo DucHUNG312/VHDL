@@ -1,9 +1,18 @@
 -- =============================================================================
--- AUTHOR:    Le Vu Duc Hung
+-- AUTHOR:          Le Vu Duc Hung
 --
--- DATE:      12/06/2023
+-- DATE:            12/06/2023
 --
--- FILE:      uart_baud.vhd
+-- FILE:            uart_baud.vhd
+--
+-- DESCRIPTION:     UART Baud Rate Generator
+--                  This file contains the implementation of a baud rate generator
+--                  for UART communication. It generates clock ticks at the required
+--                  baud rate based on the input clock frequency (50MHz) and desired 
+--                  baud rate (19200). The generated ticks are used for synchronizing 
+--                  the transmission and reception of data between UART devices. The 
+--                  baud rate generator uses oversampling techniques to ensure accurate 
+--                  timing and supports both transmit (tx_tick) and receive (rx_tick) clocks.
 -- =============================================================================
 -- MIT License
 -- Copyright (c) 2023 Le Vu Duc Hung
@@ -48,8 +57,8 @@ end entity uart_baud;
 
 architecture rtl of uart_baud is
     --================================= Constants =====================================--
-    constant c_tx_div:       integer := config.clock_frequency / config.baud_rate;
-    constant c_rx_div:       integer := config.clock_frequency / (config.baud_rate * 16);
+    constant c_tx_div:       integer := config.clock_frequency / config.baud_rate;        -- 2605
+    constant c_rx_div:       integer := config.clock_frequency / (config.baud_rate * 16); -- 163
     constant c_tx_div_width: integer := integer(log2(real(c_tx_div))) + 1;
     constant c_rx_div_width: integer := integer(log2(real(c_rx_div))) + 1;
 

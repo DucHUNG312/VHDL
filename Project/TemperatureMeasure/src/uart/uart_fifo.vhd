@@ -1,9 +1,19 @@
 -- =============================================================================
--- AUTHOR:    Le Vu Duc Hung
+-- AUTHOR:          Le Vu Duc Hung
 --
--- DATE:      12/06/2023
+-- DATE:            12/06/2023
 --
--- FILE:      uart_fifo.vhd
+-- FILE:            uart_fifo.vhd
+--
+-- DESCRIPTION:     UART FIFO Implementation
+--                  This file contains the implementation of a FIFO (First-In,
+--                  First-Out) buffer for UART communication. It is used for storing
+--                  incoming and outgoing data in a sequential manner, ensuring that
+--                  the order of data transmission is preserved. The FIFO has separate
+--                  write and read pointers to manage data transfers and track the
+--                  occupancy level of the buffer. The fullness and emptiness of the
+--                  FIFO can be determined using the 'full' and 'empty' signals, while
+--                  the current level of data can be accessed through the 'level' signal.
 -- =============================================================================
 -- MIT License
 -- Copyright (c) 2023 Le Vu Duc Hung
@@ -56,7 +66,7 @@ architecture rtl of uart_fifo is
     type memory is array (0 to config.fifo_depth - 1) of std_ulogic_vector(config.fifo_width - 1 downto 0);
     
     signal fifo_memory: memory     := (others => (others => '0'));
-    signal read_pointer, write_pointer: UNSIGNED(integer(ceil(log2(REAL(config.fifo_depth)))) - 1 downto 0) := (others => '0');
+    signal read_pointer, write_pointer: unsigned(integer(ceil(log2(real(config.fifo_depth)))) - 1 downto 0) := (others => '0');
     signal fifo_empty:  std_ulogic := '1';
     signal fifo_full:   std_ulogic := '0';
 begin

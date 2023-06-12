@@ -1,8 +1,18 @@
--- =============================================================================
+-- ==================================================================================
 -- AUTHOR:          Le Vu Duc Hung
 --
+-- DATE:            13/06/2023
+--
 -- FILE:            uart_rx.vhd
--- =============================================================================
+--
+-- DESCRIPTION:     UART Receiver Implementation
+--                  This file contains the implementation of a UART receiver,
+--                  responsible for receiving and processing serial data according
+--                  to the UART protocol. It includes modules for synchronizing the
+--                  received data, filtering the received bits, and detecting the
+--                  spacing between the received bits. The received and validated
+--                  data can be accessed through the 'uart_rx_data_out_sb' signal
+-- ==================================================================================
 -- MIT License
 -- Copyright (c) 2023 Le Vu Duc Hung
 --
@@ -24,11 +34,12 @@
 -- LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 -- OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 -- WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
--- =============================================================================
+-- ==================================================================================
 
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use ieee.math_real.all;
 use work.uart_pkg.all;
 
 entity uart_tx is
@@ -39,11 +50,10 @@ entity uart_tx is
         clk:                  in std_ulogic;
         reset:                in std_ulogic;
         rx_baud_tick:         in std_ulogic;
-        rx:                   in std_logic;
+        rx:                   in std_ulogic;
 
-        data_stream_in_ack :  out std_logic;
-        data_stream_out:      out std_logic_vector(config.data_bits downto 0);
-        data_stream_out_stb:  out std_logic;
+        data_stream_out:      out std_ulogic_vector(config.data_bits downto 0);
+        data_stream_out_stb:  out std_ulogic;
     );
 begin
 end entity uart_tx;
@@ -51,18 +61,19 @@ end entity uart_tx;
 architecture rtl of uart_tx is
     type uart_rx_states is (rx_get_start_bit, rx_get_data, rx_get_stop_bit);
 
--- ===================================================================================================================
--- |          Signals               |                        Data Type                          |        Value        |
--- ===================================================================================================================
-    signal uart_rx_state:                 uart_rx_states                                          := rx_get_start_bit;                          
-    signal uart_rx_count:                 unsigned(2 downto 0)                                    := (others => '0');
-    signal uart_rx_data_vec:              std_ulogic_vector(config.data_bits - 1 downto 0)        := (others => '0');
-    signal uart_rx_data_out_sb:           std_ulogic                                              := '0'; 
-    signal uart_rx_data_sr:               std_ulogic_vector(1 downto 0)                           := (others => '1');
-    signal uart_rx_bit:                   std_ulogic                                              := '1';
-    signal uart_rx_filter:                unsigned(1 downto 0)                                    := (others => '1');
-    signal uart_rx_bit_spacing:           unsigned(3 downto 0)                                    := (others => '0');
-    signal uart_rx_bit_tick:              std_ulogic                                              := '0';
+-- =====================================================================================================================================
+-- |          Signals               |                                 Data Type                                    |       Value        |
+-- =====================================================================================================================================
+    signal uart_rx_state            :     uart_rx_states                                                           := rx_get_start_bit;                          
+    signal uart_rx_count            :     unsigned(integer(ceil(log2(real(config.data_bits)))) - 1 downto 0)       := (others => '0');
+    signal uart_rx_data_vec         :     std_ulogic_vector(config.data_bits - 1 downto 0)                         := (others => '0');
+    signal uart_rx_data_out_sb      :     std_ulogic                                                               := '0'; 
+    signal uart_rx_data_sr          :     std_ulogic_vector(1 downto 0)                                            := (others => '1');
+    signal uart_rx_bit              :     std_ulogic                                                               := '1';
+    signal uart_rx_filter           :     unsigned(1 downto 0)                                                     := (others => '1');
+    signal uart_rx_bit_spacing      :     unsigned(integer(ceil(log2(real(config.bit_spacing)))) - 1 downto 0)     := (others => '0');
+    signal uart_rx_bit_tick         :     std_ulogic                                                               := '0';
+-- =====================================================================================================================================
 begin
     -- Connect IO
     data_stream_out <= uart_rx_data_vec;
@@ -118,7 +129,7 @@ begin
         if rising_edge(clk) then
             uart_rx_bit_tick <= '0';
             if rx_baud_tick = '1' then
-                if uart_rx_bit_spacing = 15 then
+                if uart_rx_bit_spacing = config.bit_spacing - 1 then
                     uart_rx_bit_tick <= '1';
                     uart_rx_bit_spacing <= (others => '0');
                 else 
@@ -151,7 +162,7 @@ begin
                         if uart_rx_bit_tick = '1' then
                             uart_rx_data_vec(uart_rx_data_vec'high) <= uart_rx_bit; -- receive uart_rx_bit
                             uart_rx_data_vec(uart_rx_data_vec'high - 1 downto 0) <= uart_rx_data_vec(uart_rx_data_vec'high downto 1); -- shift the data
-                            if uart_rx_count < 7 then
+                            if uart_rx_count < config.data_bits - 1 then
                                 uart_rx_count <= uart_rx_count + 1;
                             else 
                                 uart_rx_count <= (others => '0');
