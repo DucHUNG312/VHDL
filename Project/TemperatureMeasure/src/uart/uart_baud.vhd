@@ -68,6 +68,10 @@ architecture rtl of uart_baud is
     signal rx_baud_counter: unsigned(c_rx_div_width - 1 downto 0) := (others => '0');
     signal rx_baud_tick:    std_ulogic                            := '0';
 begin
+    -- Connect IO
+    rx_tick <= rx_baud_tick;
+    tx_tick <= tx_baud_tick;
+
     -- OVERSAMPLE_CLOCK_DIVIDER: Generate an oversampled tick (baud * 16)
     OVERSAMPLE_CLOCK_DIVIDER: process(clk)
     begin
@@ -105,61 +109,5 @@ begin
             end if;
         end if;
     end process; -- TX_CLOCK_DIVIDER
-
-    rx_tick <= rx_baud_tick;
-    tx_tick <= tx_baud_tick;
     
-end architecture rtl;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 end architecture rtl;

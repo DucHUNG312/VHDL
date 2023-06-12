@@ -52,10 +52,10 @@ entity uart_fifo is
         clk:          in std_ulogic;
         reset:        in std_ulogic;
         write_data:   in std_ulogic_vector(config.fifo_width - 1 downto 0);
-        read_data:    in std_ulogic_vector(config.fifo_width - 1 downto 0);
         write_enable: in std_ulogic;
         read_enable:  in std_ulogic;
         
+		read_data:    out std_ulogic_vector(config.fifo_width - 1 downto 0);
         full :        out std_ulogic;
         empty:        out std_ulogic;
         level:        out std_ulogic_vector(integer(ceil(log2(real(config.fifo_depth)))) - 1 downto 0)

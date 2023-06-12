@@ -42,7 +42,7 @@ package uart_pkg is
         data_bits:          positive;  -- Number of data bits per frame
         bit_spacing:        positive; 
         fifo_width:         positive;
-        fifo_depth:         positive;
+        fifo_depth:         positive;   
     end record uart_config;
     
     --================================= Constants =================================--
@@ -51,7 +51,7 @@ package uart_pkg is
         baud_rate       =>    19200,
         data_bits       =>    8,
         bit_spacing     =>    16,
-        fifo_width      =>    32,
+        fifo_width      =>    8,
         fifo_depth      =>    1024
     );
     
@@ -72,7 +72,7 @@ package uart_pkg is
             data_stream_in_ack:   out std_ulogic;
             tx:                   out std_ulogic
         );
-    end component;
+    end component uart_tx;
     
     --================================= UART_RX ===================================--
     component uart_rx is
@@ -88,7 +88,7 @@ package uart_pkg is
             data_stream_out:      out std_ulogic_vector(config.data_bits - 1 downto 0);
             data_stream_out_stb:  out std_ulogic 
         );
-    end component;
+    end component uart_rx;
     
     --================================= UART_FIFO ===================================--
     component uart_fifo is
@@ -107,7 +107,7 @@ package uart_pkg is
             empty:        out std_ulogic;
             level:        out std_ulogic_vector(integer(ceil(log2(real(config.fifo_depth)))) - 1 downto 0)
         );
-    end component;
+    end component uart_fifo;
     
     --================================= UART_BAUD ===================================--
     component uart_baud is
@@ -120,12 +120,25 @@ package uart_pkg is
             rx_tick:  out std_ulogic;
             tx_tick:  out std_ulogic
         );
-    end component;
+    end component uart_baud;
+
+    --================================= UART_LOOPBACK ===================================--
+    component uart_loopback is
+        generic(
+            config: uart_config := uart_default_config
+        );
+        port (
+            clk:   in std_ulogic;
+            reset: in std_ulogic;
+            rx:    in std_ulogic;
+            tx:    out std_ulogic
+        );
+    end component uart_loopback;
     
     --================================= UART_TOP ===================================--
     component uart_top is
         
-    end component;
+    end component uart_top;
     
 end package uart_pkg;
 
