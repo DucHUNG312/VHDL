@@ -53,18 +53,18 @@ entity seven_segment_decoder is
 end entity seven_segment_decoder;
 
 architecture rtl of seven_segment_decoder is
-    signal temperature:       unsigned(7 downto 0);         := (others => '0'); -- Temperature signal derived from ADC
-    signal temperature_digit: unsigned(3 downto 0);         := (others => '0'); -- Individual digit of the temperature
+    signal temperature:       unsigned(7 downto 0)          := (others => '0'); -- Temperature signal derived from ADC
+    signal temperature_digit: unsigned(3 downto 0)          := (others => '0'); -- Individual digit of the temperature
     signal display_segment:   std_ulogic_vector(6 downto 0) := (others => '0'); -- Individual segment control for the display
 begin
-    SEVEN_SEGMENT_DECODER : process( sensitivity_list )
+    SEVEN_SEGMENT_DECODER : process(clk)
     begin
         if rising_edge(clk) then
             if reset = '1' then
                 display_segment <= (others => '0');
             else
                 -- Convert ADC reading to temperature
-                temperature <= adc_reading;
+                temperature <= adc_data_out;
 
                 -- Convert temperature reading to individual digits
                 temperature_digit <= temperature(7 downto 4);
@@ -72,27 +72,27 @@ begin
                 -- Decode the temperature digit to 7-segment representation
                 case temperature_digit is
                     when "0000" =>
-                        display_segment <= "0000001";  -- Display '0'
+                        display_segment <= "0111111";  -- Display '0'
                     when "0001" =>
-                        display_segment <= "1001111";  -- Display '1'
+                        display_segment <= "0000110";  -- Display '1'
                     when "0010" =>
-                        display_segment <= "0010010";  -- Display '2'
+                        display_segment <= "1011011";  -- Display '2'
                     when "0011" =>
-                        display_segment <= "0000110";  -- Display '3'
+                        display_segment <= "1001111";  -- Display '3'
                     when "0100" =>
-                        display_segment <= "1001100";  -- Display '4'
+                        display_segment <= "1100110";  -- Display '4'
                     when "0101" =>
-                        display_segment <= "0100100";  -- Display '5'
+                        display_segment <= "1101101";  -- Display '5'
                     when "0110" =>
-                        display_segment <= "0100000";  -- Display '6'
+                        display_segment <= "1111101";  -- Display '6'
                     when "0111" =>
-                        display_segment <= "0001111";  -- Display '7'
+                        display_segment <= "0000111";  -- Display '7'
                     when "1000" =>
-                        display_segment <= "0000000";  -- Display '8'
+                        display_segment <= "1111111";  -- Display '8'
                     when "1001" =>
-                        display_segment <= "0000100";  -- Display '9'
+                        display_segment <= "1100111";  -- Display '9'
                     when others =>
-                        display_segment <= "1111111";  -- Display '-' for unknown value
+                        display_segment <= "0000000";  -- Display '-' for unknown value
                 end case;
             end if;
         end if;

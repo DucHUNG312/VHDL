@@ -43,24 +43,19 @@ entity adc_shift_register is
     );
     port (
         clk:           in std_ulogic;
-        reset:         in std_ulogic;
         data_in:       in std_ulogic;
-        data_out:      out std_ulogic_vector(config.state_bits - 1 downto 0)
+        data_out:      out std_ulogic_vector(config.data_bits - 1 downto 0)
     );
 end entity adc_shift_register;
 
 architecture rtl of adc_shift_register is
-    signal data: std_ulogic_vector(config.state_bits - 1 downto 0) := (others => '0');
+    signal data: std_ulogic_vector(config.data_bits - 1 downto 0) := (others => '0');
 begin
     SHIFT_REGISTER : process(clk)
     begin
         if rising_edge(clk) then
-            if reset = '1' then
-                data <= (others => '0');
-            else
-                data(data'high - 1 downto 0) <= data(data'high downto 1); -- shift the data
-                data(0) <= data_in;     
-            end if;
+            data(data'high - 1 downto 0) <= data(data'high downto 1); -- shift the data
+            data(0) <= data_in;     
         end if;
     end process ; -- SHIFT_REGISTER
     

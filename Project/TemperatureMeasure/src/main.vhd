@@ -32,6 +32,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use work.uart_pkg.all;
+use work.adc_pkg.all;
 
 entity main is
     port (
@@ -41,17 +42,6 @@ entity main is
 end entity main;
 
 architecture rtl of main is
-    component uart_top is
-        generic (
-            config: uart_config := uart_default_config
-        );
-        port (
-            clk          : in  std_ulogic;
-            user_reset   : in  std_ulogic;
-            rs232_rxd    : in  std_ulogic;  
-            rs232_txd    : out std_ulogic 
-        );
-    end component uart_top;
     
 begin
     

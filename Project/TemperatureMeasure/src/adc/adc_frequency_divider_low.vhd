@@ -46,7 +46,6 @@ entity adc_frequency_divider_low is
     );
     port (
         clk:           in std_ulogic;
-        reset:         in std_ulogic;
         frequency_out: out std_ulogic
     );
 end entity adc_frequency_divider_low;
@@ -56,24 +55,19 @@ architecture rtl of adc_frequency_divider_low is
     --================================= Constants =====================================--
     constant max: integer := config.sampling_div - 1;
 
-    --================================= Signals =====================================--
+    --================================== Signals ======================================--
     signal counter:   integer range 0 to max := 0;
     signal frequency: std_ulogic             := '0';
 begin
     FREQUENCY_DIVIDER_LOW: process(clk)
     begin
         if rising_edge(clk) then
-            if reset = '1' then
+            if counter = max then
                 counter <= 0;
-                frequency <= '0';
+                frequency <= '1';
             else
-                if counter = max then
-                    counter <= 0;
-                    frequency <= '1';
-                else
-                    counter <= counter + 1;
-                    frequency <= '0';
-                end if;
+                counter <= counter + 1;
+                frequency <= '0';
             end if;
         end if;
     end process ; -- FREQUENCY_DIVIDER_LOW

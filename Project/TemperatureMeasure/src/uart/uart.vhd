@@ -36,9 +36,9 @@
 -- OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 -- WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -- ==========================================================================================================================================================
-library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 use ieee.math_real.all;
 use work.uart_pkg.all;
 
@@ -64,8 +64,6 @@ entity uart is
 end entity uart;
 
 architecture rtl of uart is
-
-    
 
     --=========================================================== Constants =========================================================--
     constant c_tx_div:        integer := config.clock_frequency / config.baud_rate;        -- 2605

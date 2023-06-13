@@ -52,19 +52,6 @@ end entity uart_top;
 
 architecture rtl of uart_top is
 
-    --================================= UART_LOOPBACK ===================================--
-    component uart_loopback is
-        generic(
-            config: uart_config := uart_default_config
-        );
-        port (
-            clk:   in std_ulogic;
-            reset: in std_ulogic;
-            rx:    in std_ulogic;
-            tx:    out std_ulogic
-        );
-    end component uart_loopback;
-
 -- ===================================================================
 -- |    Signals        |         Data Type      |       Value        |
 -- ===================================================================

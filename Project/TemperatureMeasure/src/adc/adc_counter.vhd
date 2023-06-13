@@ -57,7 +57,7 @@ architecture rtl of adc_counter is
     --================================= Constants =====================================--
     constant max: integer := 2**config.state_bits - 1;
 
-    --================================= Signals =====================================--
+    --================================== Signals ======================================--
     signal count: unsigned(config.state_bits - 1 downto 0) := (others => '0');
 begin
     ADC_COUNTER : process(clk)

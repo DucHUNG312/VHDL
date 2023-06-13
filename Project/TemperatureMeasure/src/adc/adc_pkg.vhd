@@ -34,7 +34,7 @@ use ieee.numeric_std.all;
 
 package adc_pkg is
 
-    --================================= Types =====================================--
+    --=========================================== Types ===========================================--
     type adc_config is record
         clock_frequency:        positive;  -- clock frequency (50MHz)
         data_bits:              positive;  -- Number of data bits per frame
@@ -46,7 +46,7 @@ package adc_pkg is
     end record adc_config;
     
 
-    --================================= Constants =================================--
+    --========================================== Constants =========================================--
     constant adc_default_config: adc_config := (
         clock_frequency         =>    50000000,
         data_bits               =>    8,
@@ -58,10 +58,75 @@ package adc_pkg is
     );
 
 
-    --===================================== ADC ====================================--
-    component adc is
-        
-    end component adc;
+    --====================================== FREQUENCY_DIVIDER ======================================--
+    component adc_frequency_divider is
+        generic (
+            config: adc_config := adc_default_config
+        );
+        port (
+            clk:           in std_ulogic;
+            frequency_out: out std_ulogic
+        );
+    end component adc_frequency_divider;
+
+
+    --===================================== FREQUENCY_DIVIDER_LOW ====================================--
+    component adc_frequency_divider_low is
+        generic (
+            config: adc_config := adc_default_config
+        );
+        port (
+            clk:           in std_ulogic;
+            frequency_out: out std_ulogic
+        );
+    end component adc_frequency_divider_low;
+
+
+    --============================================ COUNTER ============================================--
+    component adc_counter is
+        generic (
+            config: adc_config := adc_default_config
+        );
+        port (
+            clk:           in std_ulogic;
+            reset:         in std_ulogic;
+            enable:        in std_ulogic;
+            count_out:     out std_ulogic_vector(config.state_bits - 1 downto 0);
+            overflow:      out std_ulogic
+        );
+    end component adc_counter;
+
+
+    --======================================== SHIFT_REGISTER ==========================================--
+    component adc_shift_register is
+        generic (
+            config: adc_config := adc_default_config
+        );
+        port (
+            clk:           in std_ulogic;
+            data_in:       in std_ulogic;
+            data_out:      out std_ulogic_vector(config.data_bits - 1 downto 0)
+        );
+    end component adc_shift_register;
+
+
+    --============================================ ADC_TOP ==============================================--
+    component adc_top is
+        generic (
+            config: adc_config := adc_default_config
+        );
+        port (
+            clk_in:            in std_ulogic;
+            adc_data_out_ack:  in std_ulogic;
+    
+            adc_data_in_ack:   out std_ulogic;
+            adc_chip_select:   out std_ulogic;
+            adc_clk:           out std_ulogic;
+            clk_sampling:      out std_ulogic;
+            measured_values_1: out std_ulogic_vector(config.data_bits - 1 downto 0);
+            measured_values_2: out std_ulogic_vector(config.data_bits - 1 downto 0)
+        );
+    end component adc_top;
 
 end package adc_pkg;
 
