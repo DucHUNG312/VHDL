@@ -45,6 +45,7 @@ entity adc_frequency_divider is
     );
     port (
         clk:           in std_ulogic;
+        reset:         in std_ulogic;
         frequency_out: out std_ulogic
     );
 end entity adc_frequency_divider;
@@ -65,23 +66,32 @@ begin
     FREQUENCY_DIVIDER : process(clk)
     begin
         if rising_edge(clk) then
-            if counter = max then
+            if reset = '1' then
                 counter <= 0;
-            elsif counter > half and counter < max then
-                counter <= counter + 1;
-                rise_square_ware <= '1';
-            else
-                counter <= counter + 1;
                 rise_square_ware <= '0';
+            else
+                if counter = max then
+                    counter <= 0;
+                elsif counter > half and counter < max then
+                    counter <= counter + 1;
+                    rise_square_ware <= '1';
+                else
+                    counter <= counter + 1;
+                    rise_square_ware <= '0';
+                end if;
             end if;
         end if;
 
         if (not div_is_even) and config.ratio_must_be_half then
             if falling_edge(clk) then
-                if counter > half then
-                    fall_square_wave <= '1';
-                else
+                if reset = '1' then
                     fall_square_wave <= '0';
+                else 
+                    if counter > half then
+                        fall_square_wave <= '1';
+                    else
+                        fall_square_wave <= '0';
+                    end if;
                 end if;
             end if;
         end if;
