@@ -1,10 +1,13 @@
--- =============================================================================
--- AUTHOR:    Le Vu Duc Hung
+-- ======================================================================================================
+-- AUTHOR:          Le Vu Duc Hung
 --
--- DATE:      12/06/2023
+-- DATE:            12/06/2023
 --
--- FILE:      uart_pkg.vhd
--- =============================================================================
+-- FILE:            uart_pkg.vhd
+--
+-- DESCRIPTION:     This package defines types, constants, and components related to UART communication.
+--                  It provides a configurable UART component along with a FIFO and loopback components.
+-- ======================================================================================================
 -- MIT License
 -- Copyright (c) 2023 Le Vu Duc Hung
 --
@@ -26,7 +29,7 @@
 -- LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 -- OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 -- WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
--- =============================================================================
+-- ======================================================================================================
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -58,44 +61,31 @@ package uart_pkg is
     --================================= Functions ===================================--
     function get_fifo_level(write_pointer: unsigned; read_pointer: unsigned; depth: positive) return integer;
     
-    --================================= UART_TX ===================================--
-    component uart_tx is
-        generic(
-            config: uart_config := uart_default_config
+    --================================= UART ===================================--
+    component uart is
+        generic (
+            config:   uart_config := uart_default_config
         );
         port (
-            clk:                  in std_ulogic;
-            reset:                in std_ulogic;
-            tx_baud_tick:         in std_ulogic;
-            data_stream_in:       in std_ulogic_vector(config.data_bits - 1 downto 0);
-            data_stream_in_std:   in std_ulogic;
-            data_stream_in_ack:   out std_ulogic;
-            tx:                   out std_ulogic
-        );
-    end component uart_tx;
-    
-    --================================= UART_RX ===================================--
-    component uart_rx is
-        generic(
-            config: uart_config := uart_default_config
-        );
-        port(
-            clk:                  in std_ulogic;
-            reset:                in std_ulogic;
-            rx_baud_tick:         in std_ulogic;
-            rx:                   in std_ulogic;
+            clk:                  in  std_ulogic;
+            reset:                in  std_ulogic;
+            data_stream_in:       in  std_ulogic_vector(config.data_bits - 1 downto 0);
+            data_stream_in_std:   in  std_ulogic;  
+            rx:                   in  std_ulogic;
 
             data_stream_out:      out std_ulogic_vector(config.data_bits - 1 downto 0);
-            data_stream_out_stb:  out std_ulogic 
+            data_stream_out_stb:  out std_ulogic; 
+            data_stream_in_ack:   out std_ulogic; 
+            tx:                   out std_ulogic
         );
-    end component uart_rx;
+    end component uart;
     
     --================================= UART_FIFO ===================================--
     component uart_fifo is
-        generic(
+        generic (
             config: uart_config := uart_default_config
         );
-        port(
+        port (
             clk:          in std_ulogic;
             reset:        in std_ulogic;
             write_data:   in std_ulogic_vector(config.fifo_width - 1 downto 0);
@@ -108,32 +98,19 @@ package uart_pkg is
             level:        out std_ulogic_vector(integer(ceil(log2(real(config.fifo_depth)))) - 1 downto 0)
         );
     end component uart_fifo;
-    
-    --================================= UART_BAUD ===================================--
-    component uart_baud is
-        generic (
-            config:   uart_config := uart_default_config
-        );
-        port(
-            clk:      in  std_ulogic;
-            reset:    in  std_ulogic;
-            rx_tick:  out std_ulogic;
-            tx_tick:  out std_ulogic
-        );
-    end component uart_baud;
 
     --================================= UART_LOOPBACK ===================================--
-    component uart_loopback is
-        generic(
-            config: uart_config := uart_default_config
-        );
-        port (
-            clk:   in std_ulogic;
-            reset: in std_ulogic;
-            rx:    in std_ulogic;
-            tx:    out std_ulogic
-        );
-    end component uart_loopback;
+    --component uart_loopback is
+    --    generic (
+    --        config: uart_config := uart_default_config
+    --    );
+    --    port (
+    --        clk:   in std_ulogic;
+    --        reset: in std_ulogic;
+    --        rx:    in std_ulogic;
+    --        tx:    out std_ulogic
+    --    );
+    --end component uart_loopback;
     
     --================================= UART_TOP ===================================--
     component uart_top is

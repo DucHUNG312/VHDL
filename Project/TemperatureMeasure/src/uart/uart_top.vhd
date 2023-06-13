@@ -1,10 +1,14 @@
--- =============================================================================
--- AUTHOR:    Le Vu Duc Hung
+-- ===========================================================================================
+-- AUTHOR:          Le Vu Duc Hung
 --
--- DATE:      12/06/2023
+-- DATE:            12/06/2023
 --
--- FILE:      uart_top.vhd
--- =============================================================================
+-- FILE:            uart_top.vhd
+--
+-- DESCRIPTION:     This file describes the top-level entity for UART system. It instantiates
+--                  the UART loopback component and provides interfaces for the clock, reset,
+--                  rxd (receive data), and txd (transmit data) signals.
+-- ===========================================================================================
 -- MIT License
 -- Copyright (c) 2023 Le Vu Duc Hung
 --
@@ -26,7 +30,7 @@
 -- LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 -- OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 -- WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
--- =============================================================================
+-- ===========================================================================================
 
 library ieee;
 use ieee.std_logic_1164.all;
