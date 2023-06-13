@@ -75,9 +75,6 @@ architecture rtl of uart_rx is
     signal uart_rx_bit_tick         :     std_ulogic                                                               := '0';
 -- =====================================================================================================================================
 begin
-    -- Connect IO
-    data_stream_out <= uart_rx_data_vec;
-    data_stream_out_stb <= uart_rx_data_out_sb;
 
     -- RXD_SYNCHRONIZE: Synchronize the incoming received data (rxd) with the oversampled baud rate. It ensures that the received 
     -- data is sampled at the correct time to extract the transmitted bits accurately.
@@ -182,6 +179,10 @@ begin
             end if;
         end if;
     end process; -- UART_RECEIVE_DATA
+
+    -- Connect IO
+    data_stream_out <= uart_rx_data_vec;
+    data_stream_out_stb <= uart_rx_data_out_sb;
 
 end architecture rtl;
 

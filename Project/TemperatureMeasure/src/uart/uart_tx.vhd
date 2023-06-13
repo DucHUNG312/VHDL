@@ -71,9 +71,6 @@ architecture rtl of uart_tx is
     signal uart_rx_data_in_ack      :     std_ulogic                                                               := '0'; 
 -- =====================================================================================================================================
 begin
-    -- Connect IO
-    data_stream_in_ack <= uart_rx_data_in_ack;
-    tx                 <= uart_tx_data;
 
     -- UART_SEND_DATA
     UART_SEND_DATA : process(clk)
@@ -119,6 +116,10 @@ begin
             end if;
         end if;
     end process ; -- UART_SEND_DATA
+
+    -- Connect IO
+    data_stream_in_ack <= uart_rx_data_in_ack;
+    tx                 <= uart_tx_data;
     
 end architecture rtl;
 

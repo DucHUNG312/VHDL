@@ -70,9 +70,6 @@ architecture rtl of uart_fifo is
     signal fifo_empty:  std_ulogic := '1';
     signal fifo_full:   std_ulogic := '0';
 begin
-    full <= fifo_full;
-    empty <= fifo_empty;
-
     FIFO_FLAGS : process(write_pointer, read_pointer) is
         variable fifo_level: integer range 0 to config.fifo_depth - 1;
     begin
@@ -121,6 +118,10 @@ begin
 
         read_data <= fifo_memory(to_integer(read_pointer));
     end process ; -- FIFO_LOGIC
+
+    -- Connect IO
+    full <= fifo_full;
+    empty <= fifo_empty;
 
 end architecture rtl;
         

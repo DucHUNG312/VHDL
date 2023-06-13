@@ -100,6 +100,4 @@ begin
 		  end if;
     end process; -- DEGLITCH
     
-    
-    
 end architecture rtl;

@@ -57,9 +57,6 @@ architecture rtl of seven_segment_decoder is
     signal temperature_digit: unsigned(3 downto 0);         := (others => '0'); -- Individual digit of the temperature
     signal display_segment:   std_ulogic_vector(6 downto 0) := (others => '0'); -- Individual segment control for the display
 begin
-    -- Connect IO
-    display <= not display_segment when inverted_out else display_segment;
-
     SEVEN_SEGMENT_DECODER : process( sensitivity_list )
     begin
         if rising_edge(clk) then
@@ -100,5 +97,8 @@ begin
             end if;
         end if;
     end process; -- SEVEN_SEGMENT_DECODER
+
+    -- Connect IO
+    display <= not display_segment when inverted_out else display_segment;
 
 end architecture rtl;

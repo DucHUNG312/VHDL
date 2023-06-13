@@ -1,10 +1,16 @@
--- =============================================================================
+-- ===================================================================================================
 -- AUTHOR:          Le Vu Duc Hung
 --
 -- DATE:            13/06/2023
 --
 -- FILE:            adc_frequency_divider.vhd
--- =============================================================================
+--
+-- DESCRIPTION:     This file defines an ADC frequency divider module. It takes an input clock signal
+--                  (clk) and generates a divided frequency output (frequency_out) The module uses a 
+--                  counter to divide the input clock frequency. The divided output waveform is 
+--                  generated using a rising square wave and an optional falling square wave if the 
+--                  configuration requires the ratio to be half.
+-- ===================================================================================================
 -- MIT License
 -- Copyright (c) 2023 Le Vu Duc Hung
 --
@@ -26,4 +32,62 @@
 -- LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 -- OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 -- WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
--- =============================================================================
+-- ===================================================================================================
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+use work.adc_pkg.all;
+
+entity adc_frequency_divider is
+    generic (
+        config: adc_config := adc_default_config
+    );
+    port (
+        clk:           in std_ulogic;
+        frequency_out: out std_ulogic
+    );
+end entity adc_frequency_divider;
+
+architecture rtl of adc_frequency_divider is
+
+    --================================= Constants =====================================--
+    constant max:         integer := config.clk_div - 1;
+    constant half:        integer := max / 2;
+    constant div_is_even: boolean := ((config.clk_div mod 2) = 0);
+
+
+    --================================= Signals =====================================--
+    signal counter:          integer range 0 to max  := 0;
+    signal rise_square_ware: std_ulogic              := '0';
+    signal fall_square_wave: std_ulogic              := '0';
+begin
+    FREQUENCY_DIVIDER : process(clk)
+    begin
+        if rising_edge(clk) then
+            if counter = max then
+                counter <= 0;
+            elsif counter > half and counter < max then
+                counter <= counter + 1;
+                rise_square_ware <= '1';
+            else
+                counter <= counter + 1;
+                rise_square_ware <= '0';
+            end if;
+        end if;
+
+        if (not div_is_even) and config.ratio_must_be_half then
+            if falling_edge(clk) then
+                if counter > half then
+                    fall_square_wave <= '1';
+                else
+                    fall_square_wave <= '0';
+                end if;
+            end if;
+        end if;
+    end process ; -- FREQUENCY_DIVIDER
+
+    -- Connect IO
+    frequency_out <= rise_square_ware when (div_is_even or (not config.ratio_must_be_half)) else (rise_square_ware or fall_square_wave);
+    
+end architecture rtl;

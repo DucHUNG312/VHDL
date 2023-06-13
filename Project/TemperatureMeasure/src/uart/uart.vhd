@@ -109,11 +109,6 @@ architecture rtl of uart is
 -- =====================================================================================================================================
 
 begin
-    -- Connect IO
-    data_stream_out     <= uart_rx_data_vec;
-    data_stream_out_stb <= uart_rx_data_out_sb;
-    data_stream_in_ack  <= uart_rx_data_in_ack;
-    tx                  <= uart_tx_data;
 
     -- OVERSAMPLE_CLOCK_DIVIDER: Generate an oversampled tick (baud * 16)
     OVERSAMPLE_CLOCK_DIVIDER: process(clk)
@@ -307,5 +302,11 @@ begin
             end if;
         end if;
     end process ; -- UART_SEND_DATA
+
+    -- Connect IO
+    data_stream_out     <= uart_rx_data_vec;
+    data_stream_out_stb <= uart_rx_data_out_sb;
+    data_stream_in_ack  <= uart_rx_data_in_ack;
+    tx                  <= uart_tx_data;
     
 end architecture rtl;

@@ -39,6 +39,9 @@ package adc_pkg is
         clock_frequency:        positive;  -- clock frequency (50MHz)
         data_bits:              positive;  -- Number of data bits per frame
         end_reception_state:    positive; 
+        clk_div:                positive;
+        ratio_must_be_half:     boolean;
+        sampling_div:           positive;
     end record adc_config;
     
 
@@ -46,7 +49,10 @@ package adc_pkg is
     constant adc_default_config: adc_config := (
         clock_frequency         =>    50000000,
         data_bits               =>    8,
-        end_reception_state     =>    12
+        end_reception_state     =>    12,
+        clk_div                 =>    125,
+        ratio_must_be_half      =>    false,
+        sampling_div            =>    40
     );
 
 
