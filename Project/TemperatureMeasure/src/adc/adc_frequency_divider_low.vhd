@@ -60,7 +60,7 @@ architecture rtl of adc_frequency_divider_low is
     signal counter:   integer range 0 to max := 0;
     signal frequency: std_ulogic             := '0';
 begin
-    FREQUENCY_DIVIDER_LOW : process(clk)
+    FREQUENCY_DIVIDER_LOW: process(clk)
     begin
         if rising_edge(clk) then
             if reset = '1' then

@@ -1,10 +1,14 @@
--- =============================================================================
+-- ============================================================================================
 -- AUTHOR:          Le Vu Duc Hung
 --
 -- DATE:            13/06/2023
 --
 -- FILE:            adc_shift_register.vhd
--- =============================================================================
+-- 
+-- DESCRIPTION:     This file represents an ADC (Analog-to-Digital Converter) shift register.
+--                  It takes in serial input data and shifts it through the register on rising 
+--                  edges of the clock. The output is the parallel data stored in the register.
+-- ============================================================================================
 -- MIT License
 -- Copyright (c) 2023 Le Vu Duc Hung
 --
@@ -26,4 +30,41 @@
 -- LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 -- OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 -- WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
--- =============================================================================
+-- ============================================================================================
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+use work.adc_pkg.all;
+
+entity adc_shift_register is
+    generic (
+        config: adc_config := adc_default_config
+    );
+    port (
+        clk:           in std_ulogic;
+        reset:         in std_ulogic;
+        data_in:       in std_ulogic;
+        data_out:      out std_ulogic_vector(config.state_bits - 1 downto 0)
+    );
+end entity adc_shift_register;
+
+architecture rtl of adc_shift_register is
+    signal data: std_ulogic_vector(config.state_bits - 1 downto 0) := (others => '0');
+begin
+    SHIFT_REGISTER : process(clk)
+    begin
+        if rising_edge(clk) then
+            if reset = '1' then
+                data <= (others => '0');
+            else
+                data(data'high - 1 downto 0) <= data(data'high downto 1); -- shift the data
+                data(0) <= data_in;     
+            end if;
+        end if;
+    end process ; -- SHIFT_REGISTER
+    
+    -- Connect IO
+    data_out <= data;
+
+end architecture rtl;

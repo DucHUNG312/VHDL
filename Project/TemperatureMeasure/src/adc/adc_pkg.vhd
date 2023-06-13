@@ -42,6 +42,7 @@ package adc_pkg is
         clk_div:                positive;
         ratio_must_be_half:     boolean;
         sampling_div:           positive;
+        state_bits:             positive;
     end record adc_config;
     
 
@@ -52,7 +53,8 @@ package adc_pkg is
         end_reception_state     =>    12,
         clk_div                 =>    125,
         ratio_must_be_half      =>    false,
-        sampling_div            =>    40
+        sampling_div            =>    40,
+        state_bits              =>    4
     );
 
 
