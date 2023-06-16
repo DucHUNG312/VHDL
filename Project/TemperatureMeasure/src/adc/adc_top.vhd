@@ -1,18 +1,21 @@
 -- ==================================================================================================================
--- AUTHOR:          Le Vu Duc Hung
+-- @author:          Le Vu Duc Hung
 --
--- DATE:            13/06/2023
+-- @license:         MIT
 --
--- FILE:            adc_top.vhd
+-- @copyright:       Copyright (c) 2023
 --
--- DESCRIPTION:     This file contains the top-level entity and architecture for the ADC0832 module. It implements
---                  the interface and functionality of the ADC module, including clock division, sampling,
---                  state management, data shifting, and output generation. The measured values are output through 
---                  "measured_values_1" and "measured_values_2" ports. 
+-- @maintainer:      Le Vu Duc Hung
+--
+-- @file:            adc_top.vhd
+--
+-- @date:            13/06/2023
+--
+-- @description:     This file contains the top-level entity and architecture for the ADC0832 module. It implements
+--                   the interface and functionality of the ADC module, including clock division, sampling,
+--                   state management, data shifting, and output generation. The measured values are output through 
+--                   "measured_values_1" and "measured_values_2" ports. 
 -- ==================================================================================================================
--- MIT License
--- Copyright (c) 2023 Le Vu Duc Hung
---
 -- Permission is hereby granted, free of charge, to any person obtaining
 -- a copy of this software and associated documentation files (the
 -- "Software"), to deal in the Software without restriction, including
@@ -126,7 +129,7 @@ begin
             -- reset when ADC is in sampling state or reception process has ended for the current channel and it's not the last channel
             reset <= sampling or (end_reception and (not channel)); 
         end if;
-    end process; -- RESET_SIGNAL
+    end process RESET_SIGNAL; 
     
    
     -- STORE_DATA
@@ -140,7 +143,7 @@ begin
             end if;
             channel <= not channel; -- alternately stored data in the 2 channels
         end if;
-    end process; -- STORE_DATA
+    end process STORE_DATA; 
 
     -- ADC_STATE
     ADC_STATE: process(clk)
@@ -156,7 +159,7 @@ begin
                 data_in <= 'X';
             end if;
         end if; 
-    end process; -- ADC_STATE
+    end process ADC_STATE; 
 
     -- Connect IO
     adc_clk <= clk;

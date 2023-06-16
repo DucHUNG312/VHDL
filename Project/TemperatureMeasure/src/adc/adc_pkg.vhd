@@ -1,13 +1,16 @@
--- =============================================================================
--- AUTHOR:          Le Vu Duc Hung
+-- ==================================================================================================================
+-- @author:          Le Vu Duc Hung
 --
--- DATE:            13/06/2023
+-- @license:         MIT
 --
--- FILE:            adc_pkg.vhd
--- =============================================================================
--- MIT License
--- Copyright (c) 2023 Le Vu Duc Hung
+-- @copyright:       Copyright (c) 2023
 --
+-- @maintainer:      Le Vu Duc Hung
+--
+-- @file:            adc_pkg.vhd
+--
+-- @date:            13/06/2023
+-- ==================================================================================================================
 -- Permission is hereby granted, free of charge, to any person obtaining
 -- a copy of this software and associated documentation files (the
 -- "Software"), to deal in the Software without restriction, including
@@ -26,7 +29,7 @@
 -- LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 -- OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 -- WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
--- =============================================================================
+-- ==================================================================================================================
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -36,7 +39,6 @@ package adc_pkg is
 
     --=========================================== Types ===========================================--
     type adc_config is record
-        clock_frequency:        positive;  -- clock frequency (50MHz)
         data_bits:              positive;  -- Number of data bits per frame
         end_reception_state:    positive; 
         clk_div:                positive;
@@ -48,7 +50,6 @@ package adc_pkg is
 
     --========================================== Constants =========================================--
     constant adc_default_config: adc_config := (
-        clock_frequency         =>    50000000,
         data_bits               =>    8,
         end_reception_state     =>    12,
         clk_div                 =>    125,

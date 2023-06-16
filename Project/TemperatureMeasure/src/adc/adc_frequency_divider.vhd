@@ -1,19 +1,22 @@
--- ===================================================================================================
--- AUTHOR:          Le Vu Duc Hung
+-- ==================================================================================================================
+-- @author:          Le Vu Duc Hung
 --
--- DATE:            13/06/2023
+-- @license:         MIT
 --
--- FILE:            adc_frequency_divider.vhd
+-- @copyright:       Copyright (c) 2023
 --
--- DESCRIPTION:     This file defines an ADC frequency divider module. It takes an input clock signal
---                  (clk) and generates a divided frequency output (frequency_out) The module uses a 
---                  counter to divide the input clock frequency. The divided output waveform is 
---                  generated using a rising square wave and an optional falling square wave if the 
---                  configuration requires the ratio to be half.
--- ===================================================================================================
--- MIT License
--- Copyright (c) 2023 Le Vu Duc Hung
+-- @maintainer:      Le Vu Duc Hung
 --
+-- @file:            adc_frequency_divider.vhd
+--
+-- @date:            13/06/2023
+--
+-- @description:     This file defines an ADC frequency divider module. It takes an input clock signal
+--                   (clk) and generates a divided frequency output (frequency_out) The module uses a 
+--                   counter to divide the input clock frequency. The divided output waveform is 
+--                   generated using a rising square wave and an optional falling square wave if the 
+--                   configuration requires the ratio to be half.
+-- ==================================================================================================================
 -- Permission is hereby granted, free of charge, to any person obtaining
 -- a copy of this software and associated documentation files (the
 -- "Software"), to deal in the Software without restriction, including
@@ -32,7 +35,7 @@
 -- LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 -- OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 -- WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
--- ===================================================================================================
+-- ==================================================================================================================
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -85,7 +88,7 @@ begin
                 end if;
             end if;
         end if;
-    end process ; -- FREQUENCY_DIVIDER
+    end process FREQUENCY_DIVIDER; 
 
     -- Connect IO
     frequency_out <= rise_square_ware when (div_is_even or (not config.ratio_must_be_half)) else (rise_square_ware or fall_square_wave);

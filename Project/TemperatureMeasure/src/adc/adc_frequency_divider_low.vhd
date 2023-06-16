@@ -1,20 +1,23 @@
--- =================================================================================================
--- AUTHOR:          Le Vu Duc Hung
+-- ==================================================================================================================
+-- @author:          Le Vu Duc Hung
 --
--- DATE:            13/06/2023
+-- @license:         MIT
 --
--- FILE:            adc_frequency_divider_low.vhd
+-- @copyright:       Copyright (c) 2023
 --
--- DESCRIPTION:     This file defines an ADC frequency divider module with a low output signal.
---                  The module takes an input clock signal (clk) and generates a divided frequency
---                  output (frequency_out). The module uses a counter to divide the input clock 
---                  frequency. The divided output waveform keeps the output signal in a low state 
---                  most of the time. For only one cycle of the input clock, the output clock is 
---                  in a high state.
--- =================================================================================================
--- MIT License
--- Copyright (c) 2023 Le Vu Duc Hung
+-- @maintainer:      Le Vu Duc Hung
 --
+-- @file:            adc_frequency_divider_low.vhd
+--
+-- @date:            13/06/2023
+--
+-- @description:     This file defines an ADC frequency divider module with a low output signal.
+--                   The module takes an input clock signal (clk) and generates a divided frequency
+--                   output (frequency_out). The module uses a counter to divide the input clock 
+--                   frequency. The divided output waveform keeps the output signal in a low state 
+--                   most of the time. For only one cycle of the input clock, the output clock is 
+--                   in a high state.
+-- ==================================================================================================================
 -- Permission is hereby granted, free of charge, to any person obtaining
 -- a copy of this software and associated documentation files (the
 -- "Software"), to deal in the Software without restriction, including
@@ -33,7 +36,7 @@
 -- LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 -- OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 -- WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
--- =================================================================================================
+-- ==================================================================================================================
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -70,7 +73,7 @@ begin
                 frequency <= '0';
             end if;
         end if;
-    end process ; -- FREQUENCY_DIVIDER_LOW
+    end process FREQUENCY_DIVIDER_LOW; 
     
     -- Connect IO
     frequency_out <= frequency;

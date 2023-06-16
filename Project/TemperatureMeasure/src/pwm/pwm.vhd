@@ -7,14 +7,11 @@
 --
 -- @maintainer:      Le Vu Duc Hung
 --
--- @file:            adc_counter.vhd
+-- @file:            pwm.vhd
 --
--- @date:            12/06/2023
+-- @date:            14/06/2023
 --
--- @description:     This file defines a counter module that counts the number of rising edges of
---                   an input clock signal. The current count value is provided through the output 
---                   "count_out", and the "overflow" output indicates whether the counter has reached 
---                   its maximum value (2^state_bits - 1).
+-- @description:
 -- ==================================================================================================================
 -- Permission is hereby granted, free of charge, to any person obtaining
 -- a copy of this software and associated documentation files (the
@@ -39,43 +36,41 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-use ieee.math_real.all;
-use work.adc_pkg.all;
+use work.pwm_pkg.all;
 
-entity adc_counter is
+entity pwm is
     generic (
-        config: adc_config := adc_default_config
+        config: pwm_config := pwm_default_config
     );
     port (
-        clk:           in std_ulogic;
-        reset:         in std_ulogic;
-        enable:        in std_ulogic;
-        count_out:     out std_ulogic_vector(config.state_bits - 1 downto 0);
-        overflow:      out std_ulogic
+        clk_in:   in std_ulogic;
+        ratio:    in std_ulogic(config.data_bits - 1 downto 0);
+        wave_out: out std_ulogic;
     );
-end entity adc_counter;
+end entity pwm;
 
-architecture rtl of adc_counter is
-
-    --================================= Constants =====================================--
-    constant max: integer := 2**config.state_bits - 1;
-
-    --================================== Signals ======================================--
-    signal count: unsigned(config.state_bits - 1 downto 0) := (others => '0');
+architecture rtl of pwm is
+    signal clk: std_ulogic := '0';
+    signal counter: unsigned(config.data_bits - 1 downto 0) := (others => '0');
 begin
-    ADC_COUNTER : process(clk, reset)
+    CLOCK_DIVIDER: pwm_frequency_divider
+    generic map (
+        config         => config
+    )
+    port map (
+        clk            => clk_in,
+        frequency_out  => clk
+    );
+
+    -- COUNT_RISING_EDGE
+    COUNT_RISING_EDGE: process(clk)
     begin
-        if reset = '1' then
-            count <= (others => '0');
-        elsif rising_edge(clk) then
-            if enable = '1' then
-                count <= count + 1;
-            end if;
+        if rising_edge(clk) then
+            counter <= counter + 1;
         end if;
-    end process ADC_COUNTER; 
+    end process COUNT_RISING_EDGE;
     
     -- Connect IO
-    count_out <= std_ulogic_vector(count);
-    overflow <= enable when count = max else '0';
-    
+    wave_out <= '1' when (counter < unsigned(ratio)) else '0';
 end architecture rtl;
+

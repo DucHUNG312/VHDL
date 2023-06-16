@@ -7,14 +7,9 @@
 --
 -- @maintainer:      Le Vu Duc Hung
 --
--- @file:            adc_counter.vhd
+-- @file:            pwm_pkg.vhd
 --
--- @date:            12/06/2023
---
--- @description:     This file defines a counter module that counts the number of rising edges of
---                   an input clock signal. The current count value is provided through the output 
---                   "count_out", and the "overflow" output indicates whether the counter has reached 
---                   its maximum value (2^state_bits - 1).
+-- @date:            14/06/2023
 -- ==================================================================================================================
 -- Permission is hereby granted, free of charge, to any person obtaining
 -- a copy of this software and associated documentation files (the
@@ -39,43 +34,53 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-use ieee.math_real.all;
-use work.adc_pkg.all;
 
-entity adc_counter is
-    generic (
-        config: adc_config := adc_default_config
+package pwm_pkg is
+
+    --=========================================== Types ===========================================--
+    type pwm_config is record
+        clk_div:              positive;  
+        ratio_must_be_half:   boolean;
+        data_bits:            positive; 
+
+    end record pwm_config;
+ 
+
+    --========================================== Constants =========================================--
+    constant pwm_default_config: pwm_config := (
+        clk_div               =>    19,
+        ratio_must_be_half    =>    false,
+        data_bits             =>    8
     );
-    port (
-        clk:           in std_ulogic;
-        reset:         in std_ulogic;
-        enable:        in std_ulogic;
-        count_out:     out std_ulogic_vector(config.state_bits - 1 downto 0);
-        overflow:      out std_ulogic
-    );
-end entity adc_counter;
 
-architecture rtl of adc_counter is
+    --====================================== FREQUENCY_DIVIDER ======================================--
+    component pwm_frequency_divider is
+        generic (
+            config: pwm_config := pwm_default_config
+        );
+        port (
+            clk:           in std_ulogic;
+            frequency_out: out std_ulogic
+        );
+    end component pwm_frequency_divider;
 
-    --================================= Constants =====================================--
-    constant max: integer := 2**config.state_bits - 1;
-
-    --================================== Signals ======================================--
-    signal count: unsigned(config.state_bits - 1 downto 0) := (others => '0');
-begin
-    ADC_COUNTER : process(clk, reset)
-    begin
-        if reset = '1' then
-            count <= (others => '0');
-        elsif rising_edge(clk) then
-            if enable = '1' then
-                count <= count + 1;
-            end if;
-        end if;
-    end process ADC_COUNTER; 
+    --============================================= PWM =============================================--
+    component pwm is
+        generic (
+            config: pwm_config := pwm_default_config
+        );
+        port (
+            clk_in:   in std_ulogic;
+            ratio:    in std_ulogic(config.data_bits - 1 downto 0);
+            wave_out: out std_ulogic;
+        );
+    end component pwm;
     
-    -- Connect IO
-    count_out <= std_ulogic_vector(count);
-    overflow <= enable when count = max else '0';
     
-end architecture rtl;
+end package pwm_pkg;
+
+package body pwm_pkg is
+    
+    
+    
+end package body pwm_pkg;

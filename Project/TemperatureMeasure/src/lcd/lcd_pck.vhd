@@ -7,14 +7,9 @@
 --
 -- @maintainer:      Le Vu Duc Hung
 --
--- @file:            adc_counter.vhd
+-- @file:            lcd_pck.vhd
 --
--- @date:            12/06/2023
---
--- @description:     This file defines a counter module that counts the number of rising edges of
---                   an input clock signal. The current count value is provided through the output 
---                   "count_out", and the "overflow" output indicates whether the counter has reached 
---                   its maximum value (2^state_bits - 1).
+-- @date:            13/06/2023
 -- ==================================================================================================================
 -- Permission is hereby granted, free of charge, to any person obtaining
 -- a copy of this software and associated documentation files (the
@@ -39,43 +34,44 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-use ieee.math_real.all;
-use work.adc_pkg.all;
 
-entity adc_counter is
-    generic (
-        config: adc_config := adc_default_config
-    );
-    port (
-        clk:           in std_ulogic;
-        reset:         in std_ulogic;
-        enable:        in std_ulogic;
-        count_out:     out std_ulogic_vector(config.state_bits - 1 downto 0);
-        overflow:      out std_ulogic
-    );
-end entity adc_counter;
-
-architecture rtl of adc_counter is
-
-    --================================= Constants =====================================--
-    constant max: integer := 2**config.state_bits - 1;
-
-    --================================== Signals ======================================--
-    signal count: unsigned(config.state_bits - 1 downto 0) := (others => '0');
-begin
-    ADC_COUNTER : process(clk, reset)
-    begin
-        if reset = '1' then
-            count <= (others => '0');
-        elsif rising_edge(clk) then
-            if enable = '1' then
-                count <= count + 1;
-            end if;
-        end if;
-    end process ADC_COUNTER; 
+package lcd_pck is
     
-    -- Connect IO
-    count_out <= std_ulogic_vector(count);
-    overflow <= enable when count = max else '0';
+    --=========================================== Types ===========================================--
+    type seven_segment_config is record
+        data_bits:              positive;  -- Number of data bits per frame
+        decode_bits:            positive; 
+        inverted_out:           boolean; 
+    end record seven_segment_config;
+ 
+
+    --========================================== Constants =========================================--
+    constant seven_segment_default_config: seven_segment_config := (
+        data_bits               =>    4,
+        decode_bits             =>    7,
+        inverted_out            =>    false 
+    );
     
-end architecture rtl;
+    --===================================== SEVEN_SEGMENT_DECODER ===================================--
+    component seven_segment_decoder is
+        generic (
+            config: seven_segment_config := seven_segment_default_config
+        );
+        port (
+            data_in:    in std_ulogic_vector(config.data_bits - 1 downto 0);
+            a:          out std_ulogic;
+            b:          out std_ulogic;
+            c:          out std_ulogic;
+            d:          out std_ulogic;
+            e:          out std_ulogic;
+            f:          out std_ulogic;
+            g:          out std_ulogic
+        );
+    end component seven_segment_decoder;
+    
+end package lcd_pck;
+
+package body lcd_pck is
+    
+    
+end package body lcd_pck;
