@@ -118,9 +118,9 @@ package adc_pkg is
         );
         port (
             clk_in:            in std_ulogic;
-            adc_data_out_ack:  in std_ulogic;
+            adc_data_out:      in std_ulogic;
     
-            adc_data_in_ack:   out std_ulogic;
+            adc_data_in:       out std_ulogic;
             adc_chip_select:   out std_ulogic;
             adc_clk:           out std_ulogic;
             clk_sampling:      out std_ulogic;

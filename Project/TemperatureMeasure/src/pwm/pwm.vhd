@@ -44,8 +44,8 @@ entity pwm is
     );
     port (
         clk_in:   in std_ulogic;
-        ratio:    in std_ulogic(config.data_bits - 1 downto 0);
-        wave_out: out std_ulogic;
+        ratio:    in std_ulogic_vector(config.data_bits - 1 downto 0);
+        wave_out: out std_ulogic
     );
 end entity pwm;
 

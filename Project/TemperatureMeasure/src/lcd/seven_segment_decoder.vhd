@@ -39,7 +39,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-use work.lcd_pck.all;
+use work.lcd_pkg.all;
 
 entity seven_segment_decoder is
     generic (

@@ -1,13 +1,18 @@
+-- ==================================================================================================================
+-- @author:          Le Vu Duc Hung
+--
+-- @license:         MIT
+--
+-- @copyright:       Copyright (c) 2023
+--
+-- @maintainer:      Le Vu Duc Hung
+--
+-- @file:            main.vhd
+--
+-- @date:            15/06/2023
+--
+-- @description:
 -- =============================================================================
--- AUTHOR:          Le Vu Duc Hung
---
--- DATE:            13/06/2023
---
--- FILE:            main.vhd
--- =============================================================================
--- MIT License
--- Copyright (c) 2023 Le Vu Duc Hung
---
 -- Permission is hereby granted, free of charge, to any person obtaining
 -- a copy of this software and associated documentation files (the
 -- "Software"), to deal in the Software without restriction, including
@@ -39,40 +44,46 @@ use work.pwm_pkg.all;
 
 entity main is
     port (
-        clk :               in  std_ulogic;
-        reset:              in  std_ulogic;
-        adc_data_out_ack:   in  std_ulogic;
+        clk :                                 in  std_ulogic;
+        reset:                                in  std_ulogic;
+        adc_data_out:                         in  std_ulogic;
+        adc_clk:                              out std_ulogic;
+        adc_chip_select:                      out std_ulogic;
+        adc_data_in:                          out std_ulogic;
 
-        adc_clk:            in  std_ulogic;
-        adc_chip_select:    in  std_ulogic;
-        adc_data_in_ack:    in  std_ulogic;
-        
-        a:                  out std_ulogic;
-        b:                  out std_ulogic;
-        b:                  out std_ulogic;
-        c:                  out std_ulogic;
-        d:                  out std_ulogic;
-        e:                  out std_ulogic;
-        f:                  out std_ulogic;
-        g:                  out std_ulogic;
-        led_green:          out std_ulogic;
-        led_red:            out std_ulogic;
+        a:                                    out std_ulogic;
+        b:                                    out std_ulogic;
+        c:                                    out std_ulogic;
+        d:                                    out std_ulogic;
+        e:                                    out std_ulogic;
+        f:                                    out std_ulogic;
+        g:                                    out std_ulogic;
+        led_green:                            out std_ulogic;
+        led_red:                              out std_ulogic;
 
-        tx:                 out std_ulogic
+        rx:                                   in  std_ulogic;
+        transmitter_holding_load:             in  std_ulogic;
+        tx:                                   out std_ulogic;
+        receiver_holding_register_data_out:   out std_ulogic_vector(7 downto 0);
+        parity_error:                         out std_ulogic;                                                                               
+        framing_error:                        out std_ulogic;                                                                           
+        data_received:                        out std_ulogic;   
+        transmitter_holding_register_empty:   out std_ulogic;                                                      
+        transmitter_register_empty:           out std_ulogic                                           
     );
 end entity main;
 
 architecture rtl of main is
 
--- =====================================================================================================================================
--- |          Signals               |                                 Data Type                                    |       Value        |
--- =====================================================================================================================================
-    signal measured_values_1        :     std_ulogic_vector(adc_default_config.data_bits - 1 downto 0)             := (others => '0');                                                                       
-    signal measured_values_2        :     std_ulogic_vector(adc_default_config.data_bits - 1 downto 0)             := (others => '0');
-    signal data_to_transmit         :     std_ulogic_vector(adc_default_config.data_bits - 1 downto 0)             := (others => '0');                                               
-    signal dont_transmit            :     std_ulogic                                                               := '0'; 
-    signal channel                  :     std_ulogic                                                               := '0'; 
--- =====================================================================================================================================
+-- ======================================================================================================================================
+-- |            Signals              |                                 Data Type                                    |       Value       |
+-- ======================================================================================================================================
+    signal measured_values_1         :     std_ulogic_vector(adc_default_config.data_bits - 1 downto 0)             := (others => '0');                                                                       
+    signal measured_values_2         :     std_ulogic_vector(adc_default_config.data_bits - 1 downto 0)             := (others => '0');
+    signal data_to_transmit          :     std_ulogic_vector(adc_default_config.data_bits - 1 downto 0)             := (others => '0');                                               
+    signal dont_transmit             :     std_ulogic                                                               := '0'; 
+    signal channel                   :     std_ulogic                                                               := '0'; 
+-- ======================================================================================================================================
 
 begin
     --============================================= ADC INSTANCE =============================================--
@@ -82,9 +93,9 @@ begin
     )
     port map (
         clk_in              => clk,
-        adc_data_out_ack    => adc_data_out_ack,
+        adc_data_out        => adc_data_out,
 
-        adc_data_in_ack     => adc_data_in_ack,
+        adc_data_in         => adc_data_in,
         adc_chip_select     => adc_chip_select,
         adc_clk             => adc_clk,
         clk_sampling        => open,
@@ -94,11 +105,11 @@ begin
 
     --============================================= SEVEN SEGMENT DECODER INSTANCE =============================================--
     LCD_INST: seven_segment_decoder
-    generic (
+    generic map (
         config              => seven_segment_default_config
     )
-    port (
-        data_in             => measured_values_1(config.data_bits - 1 downto config.data_bits - 4)
+    port map (
+        data_in             => measured_values_1(seven_segment_default_config.data_bits - 1 downto seven_segment_default_config.data_bits - 4),
         a                   => a,
         b                   => b,
         c                   => c,
@@ -110,20 +121,20 @@ begin
 
     --============================================= PWM INSTANCE =============================================--
     PWM_INST1: pwm
-    generic (
+    generic map (
         config              => pwm_default_config
     )
-    port (
+    port map (
         clk_in              => clk,
         ratio               => measured_values_1,
         wave_out            => led_green
     );
 
     PWM_INST2: pwm
-    generic (
+    generic map (
         config              => pwm_default_config
     )
-    port (
+    port map (
         clk_in              => clk,
         ratio               => measured_values_2,
         wave_out            => led_red
@@ -131,10 +142,32 @@ begin
 
     --============================================= UART INSTANCE =============================================--
 
+    data_to_transmit <= measured_values_2 when channel = '1' else measured_values_1;
     
-    
+    UART_INST: uart_top
+        generic map (
+            config                  => uart_default_config
+        )
+        port map (
+            clk                                   => clk,                                                                  
+            reset                                 => reset,                                                                         
+            rxd                                   => rx,                                                                
+            txd                                   => tx, 
+            transmitter_holding_register_data_in  => data_to_transmit,                                                  
+            transmitter_holding_load              => transmitter_holding_load,
+            receiver_holding_register_data_out    => receiver_holding_register_data_out,                                                    
+            parity_error                          => parity_error,                                                                             
+            framing_error                         => framing_error,                                                                      
+            data_received                         => data_received,                                                      
+            transmitter_holding_register_empty    => transmitter_holding_register_empty,                                                       
+            transmitter_register_empty            => transmitter_register_empty                                                              
+        );
 
-    
-    
-    
+    process(dont_transmit)
+        begin
+        if rising_edge(dont_transmit) then
+            channel <= not channel;
+        end if;
+    end process;
+
 end architecture rtl;

@@ -35,7 +35,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-package lcd_pck is
+package lcd_pkg is
     
     --=========================================== Types ===========================================--
     type seven_segment_config is record
@@ -69,9 +69,9 @@ package lcd_pck is
         );
     end component seven_segment_decoder;
     
-end package lcd_pck;
+end package lcd_pkg;
 
-package body lcd_pck is
+package body lcd_pkg is
     
     
-end package body lcd_pck;
+end package body lcd_pkg;
