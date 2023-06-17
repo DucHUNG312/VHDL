@@ -57,7 +57,7 @@ entity uart_top is
         clk                                      :          in              std_ulogic                                              ;     -- Clock, rising edge                                                                        |
         reset                                    :          in              std_ulogic                                              ;     -- Asynchrony reset                                                                          |
     -- =================================================================================================================================================================================================================================
-    -- |           Serial UART Interface         |        I/O Type       |                         Data Type                        |                                              Description                                         |
+    -- |          Serial UART Interface          |        I/O Type       |                         Data Type                        |                                              Description                                         |
     -- =================================================================================================================================================================================================================================
         rxd                                      :          in              std_ulogic                                              ;     -- Receive data; LSB first                                                                   |
         txd                                      :          out             std_ulogic                                              ;     -- Transmit register output (START bit, DATA bits, PARITY bit, and STOP bits); LSB First     |
@@ -190,7 +190,7 @@ begin
     end generate TX;
 
     --============================================= SKIP_TX =============================================--
-    SKIP_TX: if config.tx_impl = false generate
+    SKIP_TX : if config.tx_impl = false generate
         
         transmitter_holding_register_empty <= '0'; -- hold register empty
         transmitter_register_empty         <= '0'; -- transmitter register empty
@@ -257,10 +257,10 @@ begin
         -- Glue Logic
         -- misc
         rx_falling_edge <= (not rx_bit) and rx_bit_delayed and (not rx_busy);                          -- falling edge detection, only active if not busy
-        framing_error_combination <= not ((not rx_shift_register(rx_shift_register'left)) and rx_bit); -- start bit: left, stop bit sfr input
+        framing_error_combination <= not ((not rx_shift_register(rx_shift_register'left)) and rx_bit); -- start bit: left, stop bit shift register input
         -- parity calc & check
         PE : if config.parity_inhibit = false generate
-            parity_error_combination <= parity(rx_shift_register(rx_shift_register'left - 1 downto rx_shift_register'left - 1 - config.data_bits + 1), config.even_parity) xor rx_shift_register(rx_shift_register'right);
+            parity_error_combination <= parity(rx_shift_register(rx_shift_register'left - 1 downto rx_shift_register'left - 1 - config.data_bits + 1), config.even_parity) xor rx_shift_register(rx_shift_register'right); -- rx_shift_register(rx_shift_register'right) represent parity bit
         end generate PE;
 
         -- parity always zero

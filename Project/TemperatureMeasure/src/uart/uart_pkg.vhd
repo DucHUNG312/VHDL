@@ -149,7 +149,7 @@ package body uart_pkg is
         variable result: std_ulogic_vector(arg'reverse_range);
     begin
         for i in arg'range loop
-            result(i) := arg(i);
+            result(i) := arg(arg'high - i);
         end loop;
         return result;
     end function reverse;
