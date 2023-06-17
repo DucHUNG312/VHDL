@@ -62,9 +62,7 @@ entity main is
         led_red:                              out std_ulogic;
 
         rx:                                   in  std_ulogic;
-        transmitter_holding_load:             in  std_ulogic;
         tx:                                   out std_ulogic;
-        receiver_holding_register_data_out:   out std_ulogic_vector(7 downto 0);
         parity_error:                         out std_ulogic;                                                                               
         framing_error:                        out std_ulogic;                                                                           
         data_received:                        out std_ulogic;   
@@ -75,15 +73,17 @@ end entity main;
 
 architecture rtl of main is
 
--- ======================================================================================================================================
--- |            Signals              |                                 Data Type                                    |       Value       |
--- ======================================================================================================================================
-    signal measured_values_1         :     std_ulogic_vector(adc_default_config.data_bits - 1 downto 0)             := (others => '0');                                                                       
-    signal measured_values_2         :     std_ulogic_vector(adc_default_config.data_bits - 1 downto 0)             := (others => '0');
-    signal data_to_transmit          :     std_ulogic_vector(adc_default_config.data_bits - 1 downto 0)             := (others => '0');                                               
-    signal dont_transmit             :     std_ulogic                                                               := '0'; 
-    signal channel                   :     std_ulogic                                                               := '0'; 
--- ======================================================================================================================================
+-- =====================================================================================================================================================
+-- |                    Signals                     |                                 Data Type                                    |       Value       |
+-- =====================================================================================================================================================
+    signal measured_values_1                        :     std_ulogic_vector(adc_default_config.data_bits - 1 downto 0)             := (others => 'X');                                                                       
+    signal measured_values_2                        :     std_ulogic_vector(adc_default_config.data_bits - 1 downto 0)             := (others => 'X');
+    signal data_to_transmit                         :     std_ulogic_vector(adc_default_config.data_bits - 1 downto 0)             := (others => 'X');    
+    signal receiver_holding_register_data_out       :     std_ulogic_vector(adc_default_config.data_bits - 1 downto 0)             := (others => 'X');  
+    signal measured_values_ack                      :     std_ulogic                                                               := '0';                                  
+    signal dont_transmit                            :     std_ulogic                                                               := '0'; 
+    signal channel                                  :     std_ulogic                                                               := '0'; 
+-- =====================================================================================================================================================
 
 begin
     --============================================= ADC INSTANCE =============================================--
@@ -100,7 +100,8 @@ begin
         adc_clk             => adc_clk,
         clk_sampling        => open,
         measured_values_1   => measured_values_1,
-        measured_values_2   => measured_values_2
+        measured_values_2   => measured_values_2,
+        measured_values_ack => measured_values_ack
     );
 
     --============================================= SEVEN SEGMENT DECODER INSTANCE =============================================--
@@ -154,7 +155,7 @@ begin
             rxd                                   => rx,                                                                
             txd                                   => tx, 
             transmitter_holding_register_data_in  => data_to_transmit,                                                  
-            transmitter_holding_load              => transmitter_holding_load,
+            transmitter_holding_load              => measured_values_ack,
             receiver_holding_register_data_out    => receiver_holding_register_data_out,                                                    
             parity_error                          => parity_error,                                                                             
             framing_error                         => framing_error,                                                                      

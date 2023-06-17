@@ -117,15 +117,16 @@ package adc_pkg is
             config: adc_config := adc_default_config
         );
         port (
-            clk_in:            in std_ulogic;
-            adc_data_out:      in std_ulogic;
+            clk_in:                 in std_ulogic;
+            adc_data_out:           in std_ulogic;
     
-            adc_data_in:       out std_ulogic;
-            adc_chip_select:   out std_ulogic;
-            adc_clk:           out std_ulogic;
-            clk_sampling:      out std_ulogic;
-            measured_values_1: out std_ulogic_vector(config.data_bits - 1 downto 0);
-            measured_values_2: out std_ulogic_vector(config.data_bits - 1 downto 0)
+            adc_data_in:            out std_ulogic;
+            adc_chip_select:        out std_ulogic;
+            adc_clk:                out std_ulogic;
+            clk_sampling:           out std_ulogic;
+            measured_values_1:      out std_ulogic_vector(config.data_bits - 1 downto 0);
+            measured_values_2:      out std_ulogic_vector(config.data_bits - 1 downto 0);
+            measured_values_ack:    out std_ulogic
         );
     end component adc_top;
 
