@@ -71,7 +71,8 @@ entity uart_top is
         framing_error                            :          out             std_ulogic                                              ;     -- Framing error                                                                             |
         data_received                            :          out             std_ulogic                                              ;     -- Data Received, one clock cycle high                                                       |
         transmitter_holding_register_empty       :          out             std_ulogic                                              ;     -- Transmitter Holding Register Empty                                                        |
-        transmitter_register_empty               :          out             std_ulogic                                                    -- Transmitter Register Empty                                                                |
+        transmitter_register_empty               :          out             std_ulogic                                              ;     -- Transmitter Register Empty                                                                |
+        busy                                     :          out             std_ulogic                                                    --                                                                                           |
     -- ================================================================================================================================================================================================================================= 
     );
 end entity uart_top;
@@ -184,6 +185,7 @@ begin
 
         -- Output Assignment
         transmitter_holding_register_empty <= tx_hold_empty;                             -- hold register empty
+        busy                               <= tx_busy;
         transmitter_register_empty         <= not tx_busy;                               -- transmitter register empty
         txd                                <= tx_shift_register(tx_shift_register'left); -- serial uart data
 

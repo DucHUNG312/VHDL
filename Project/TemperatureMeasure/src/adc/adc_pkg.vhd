@@ -125,8 +125,7 @@ package adc_pkg is
             adc_clk:                out std_ulogic;
             clk_sampling:           out std_ulogic;
             measured_values_1:      out std_ulogic_vector(config.data_bits - 1 downto 0);
-            measured_values_2:      out std_ulogic_vector(config.data_bits - 1 downto 0);
-            measured_values_ack:    out std_ulogic
+            measured_values_2:      out std_ulogic_vector(config.data_bits - 1 downto 0)
         );
     end component adc_top;
 

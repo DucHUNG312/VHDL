@@ -54,8 +54,7 @@ entity adc_top is
         adc_clk:                out std_ulogic;
         clk_sampling:           out std_ulogic; -- Sampling clock (not used by the chip, but may be used to synchronize to other hardware blocks, such as controllers). When this signal is zero, the chip is sampling
         measured_values_1:      out std_ulogic_vector(config.data_bits - 1 downto 0);
-        measured_values_2:      out std_ulogic_vector(config.data_bits - 1 downto 0);
-        measured_values_ack:    out std_ulogic
+        measured_values_2:      out std_ulogic_vector(config.data_bits - 1 downto 0)
     );
 end entity adc_top;
 
@@ -69,7 +68,6 @@ architecture rtl of adc_top is
     signal state             :       std_ulogic_vector(3 downto 0)                            := (others => '0');
     signal reset             :       std_ulogic                                               := '0';
     signal end_reception     :       std_ulogic                                               := '0';
-    signal end_reception_ack :       std_ulogic                                               := '0';
     signal shifting_bytes    :       std_ulogic_vector(config.data_bits - 1 downto 0)         := (others => '0');
     signal channel           :       std_ulogic                                               := '0';
     signal data_in           :       std_ulogic                                               := '0';
@@ -138,7 +136,6 @@ begin
     STORE_DATA: process(end_reception)
     begin
         if rising_edge(end_reception) then
-            end_reception_ack <= '1'; 
             if channel = '0' then
                 measured_values_1 <= shifting_bytes;
             else
@@ -169,6 +166,5 @@ begin
     adc_chip_select <= reset;
     adc_data_in <= data_in;
     clk_sampling <= sampling;
-    measured_values_ack <= end_reception_ack;
 
 end architecture rtl;

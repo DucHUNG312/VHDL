@@ -49,7 +49,7 @@ package lcd_pkg is
     constant seven_segment_default_config: seven_segment_config := (
         data_bits               =>    4,
         decode_bits             =>    7,
-        inverted_out            =>    false 
+        inverted_out            =>    true 
     );
     
     --===================================== SEVEN_SEGMENT_DECODER ===================================--

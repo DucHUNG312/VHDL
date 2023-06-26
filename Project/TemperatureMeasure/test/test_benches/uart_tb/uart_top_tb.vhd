@@ -72,6 +72,7 @@ architecture sim of uart_top_tb is
     signal data_received:                         std_ulogic; -- Data Received, one clock cycle high                                                       
     signal transmitter_holding_register_empty:    std_ulogic; -- Transmitter Holding Register Empty                                                        
     signal transmitter_register_empty:            std_ulogic; -- Transmitter Register Empty   
+    signal busy:                                  std_ulogic; 
     signal clk_enable:                            std_ulogic := '1';          
 
 begin
@@ -92,7 +93,8 @@ begin
             framing_error                           => framing_error,                          
             data_received                           => data_received,                                                                                
             transmitter_holding_register_empty      => transmitter_holding_register_empty,                                                              
-            transmitter_register_empty              => transmitter_register_empty                      
+            transmitter_register_empty              => transmitter_register_empty,
+            busy                                    => busy                                                   --                                                                                           |
         );
 
     SIMULATE: process

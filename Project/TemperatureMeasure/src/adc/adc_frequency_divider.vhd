@@ -62,7 +62,7 @@ architecture rtl of adc_frequency_divider is
 
     --================================== Signals ======================================--
     signal counter:          integer range 0 to max  := 0;
-    signal rise_square_ware: std_ulogic              := '0';
+    signal rise_square_wave: std_ulogic              := '0';
     signal fall_square_wave: std_ulogic              := '0';
 begin
     FREQUENCY_DIVIDER : process(clk)
@@ -72,10 +72,10 @@ begin
                 counter <= 0;
             elsif counter > half and counter < max then
                 counter <= counter + 1;
-                rise_square_ware <= '1';
+                rise_square_wave <= '1';
             else
                 counter <= counter + 1;
-                rise_square_ware <= '0';
+                rise_square_wave <= '0';
             end if;
         end if;
 
@@ -91,6 +91,6 @@ begin
     end process FREQUENCY_DIVIDER; 
 
     -- Connect IO
-    frequency_out <= rise_square_ware when (div_is_even or (not config.ratio_must_be_half)) else (rise_square_ware or fall_square_wave);
+    frequency_out <= rise_square_wave when (div_is_even or (not config.ratio_must_be_half)) else (rise_square_wave or fall_square_wave);
     
 end architecture rtl;

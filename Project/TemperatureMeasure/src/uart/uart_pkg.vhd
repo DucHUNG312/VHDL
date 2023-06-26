@@ -135,7 +135,8 @@ package uart_pkg is
             framing_error:                        out std_ulogic; -- Framing error                                                                             
             data_received:                        out std_ulogic; -- Data Received, one clock cycle high                                                       
             transmitter_holding_register_empty:   out std_ulogic; -- Transmitter Holding Register Empty                                                        
-            transmitter_register_empty:           out std_ulogic  -- Transmitter Register Empty                                                                
+            transmitter_register_empty:           out std_ulogic; -- Transmitter Register Empty         
+            busy:                                 out std_ulogic                                                         
         );
     end component uart_top;
     
