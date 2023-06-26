@@ -40,6 +40,7 @@ use ieee.math_real.all;
 use work.uart_pkg.all;
 use work.adc_pkg.all;
 use work.lcd_pkg.all;
+use work.pwm_pkg.all;
 
 entity main is
     port (
@@ -116,6 +117,27 @@ begin
         f                   => f,
         g                   => g
     );
+
+    --============================================= PWM INSTANCE =============================================--
+    --PWM_INST1: pwm
+    --generic map (
+    --    config              => pwm_default_config
+    --)
+    --port map (
+    --    clk_in              => clk,
+    --    ratio               => measured_values_1,
+    --    wave_out            => led_green
+    --);
+
+    --PWM_INST2: pwm
+    --generic map (
+    --    config              => pwm_default_config
+    --)
+    --port map (
+    --    clk_in              => clk,
+    --    ratio               => measured_values_2,
+    --    wave_out            => led_red
+    --);
 
     --============================================= UART INSTANCE =============================================--
 
