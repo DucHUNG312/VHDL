@@ -67,7 +67,8 @@ entity main is
         framing_error:                        out std_ulogic;                                                                           
         data_received:                        out std_ulogic;   
         transmitter_holding_register_empty:   out std_ulogic;                                                      
-        transmitter_register_empty:           out std_ulogic                                           
+        transmitter_register_empty:           out std_ulogic;
+        receiver_holding_register_data_out:   out std_ulogic_vector(adc_default_config.data_bits - 1 downto 0)                                         
     );
 end entity main;
 
@@ -78,8 +79,7 @@ architecture rtl of main is
 -- =====================================================================================================================================================
     signal measured_values_1                        :     std_ulogic_vector(adc_default_config.data_bits - 1 downto 0)             := (others => 'X');                                                                       
     signal measured_values_2                        :     std_ulogic_vector(adc_default_config.data_bits - 1 downto 0)             := (others => 'X');
-    signal data_to_transmit                         :     std_ulogic_vector(adc_default_config.data_bits - 1 downto 0)             := (others => 'X');    
-    signal receiver_holding_register_data_out       :     std_ulogic_vector(adc_default_config.data_bits - 1 downto 0)             := (others => 'X');                         
+    signal data_to_transmit                         :     std_ulogic_vector(adc_default_config.data_bits - 1 downto 0)             := (others => 'X');                               
     signal dont_transmit                            :     std_ulogic                                                               := '0'; 
     signal channel                                  :     std_ulogic                                                               := '0'; 
 -- =====================================================================================================================================================
