@@ -18,13 +18,13 @@
 #
 # Quartus II 64-Bit
 # Version 13.1.0 Build 162 10/23/2013 SJ Web Edition
-# Date created = 17:39:52  June 29, 2023
+# Date created = 17:28:42  June 29, 2023
 #
 # -------------------------------------------------------------------------- #
 
 QUARTUS_VERSION = "13.1"
-DATE = "17:39:52  June 29, 2023"
+DATE = "17:28:42  June 29, 2023"
 
 # Revisions
 
-PROJECT_REVISION = "TemperatureMeasure"
+PROJECT_REVISION = "adc"

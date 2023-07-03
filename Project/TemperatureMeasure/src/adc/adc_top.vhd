@@ -126,7 +126,6 @@ begin
     RESET_SIGNAL: process(clk)
     begin
         if rising_edge(clk) then
-            -- reset when ADC is in sampling state or reception process has ended for the current channel and it's not the last channel
             reset <= sampling or (end_reception and (not channel)); 
         end if;
     end process RESET_SIGNAL; 
@@ -152,9 +151,9 @@ begin
             if unsigned(state) = to_unsigned(0, config.state_bits) then
                 data_in <= '1'; -- start bit
             elsif unsigned(state) = to_unsigned(1, config.state_bits) then
-                data_in <= '1'; -- SGL/DIF
+                data_in <= '1'; -- SGL (Single-Ended)
             elsif unsigned(state) = to_unsigned(2, config.state_bits) then
-                data_in <= channel; -- ODD/SIGN
+                data_in <= channel; -- ODD/EVEN
             else
                 data_in <= 'X';
             end if;
