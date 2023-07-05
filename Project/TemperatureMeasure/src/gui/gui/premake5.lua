@@ -16,6 +16,8 @@ project "gui"
 		"src/**.cpp",
 		"vendor/ceSerial/**.h",
 		"vendor/ceSerial/**.cpp",
+		"vendor/implot/**.h",
+		"vendor/implot/**.cpp",
 		"vendor/glm/glm/**.hpp",
 		"vendor/glm/glm/**.inl",
 	}
@@ -32,6 +34,7 @@ project "gui"
 		"src",
 		"vendor/ceSerial",
 		"vendor/spdlog/include",
+		"vendor/implot",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.glm}",
@@ -45,6 +48,8 @@ project "gui"
 		"Glad"
 	}
 
+	filter "files:vendor/implot/**.cpp"
+	flags { "NoPCH" }
 
 	filter "system:windows"
 		systemversion "latest"

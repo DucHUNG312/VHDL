@@ -10,3 +10,6 @@
 [submodule "Project/TemperatureMeasure/src/gui/gui/vendor/imgui"]
 	path = Project/TemperatureMeasure/src/gui/gui/vendor/imgui
 	url = https://github.com/ocornut/imgui.git
+[submodule "Project/TemperatureMeasure/src/gui/gui/vendor/implot"]
+	path = Project/TemperatureMeasure/src/gui/gui/vendor/implot
+	url = https://github.com/DucHUNG312/implot.git
