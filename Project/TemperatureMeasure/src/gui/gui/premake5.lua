@@ -14,8 +14,6 @@ project "gui"
 	{
 		"src/**.h",
 		"src/**.cpp",
-		"vendor/ceSerial/**.h",
-		"vendor/ceSerial/**.cpp",
 		"vendor/implot/**.h",
 		"vendor/implot/**.cpp",
 		"vendor/glm/glm/**.hpp",
@@ -32,7 +30,6 @@ project "gui"
 	includedirs
 	{
 		"src",
-		"vendor/ceSerial",
 		"vendor/spdlog/include",
 		"vendor/implot",
 		"%{IncludeDir.ImGui}",
@@ -45,7 +42,7 @@ project "gui"
 	{
 		"ImGui",
 		"GLFW",
-		"Glad"
+		"Glad",
 	}
 
 	filter "files:vendor/implot/**.cpp"

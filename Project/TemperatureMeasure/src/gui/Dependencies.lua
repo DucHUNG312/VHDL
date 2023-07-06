@@ -5,7 +5,6 @@ IncludeDir["GLFW"] = "%{wks.location}/gui/vendor/GLFW/include"
 IncludeDir["glm"] = "%{wks.location}/gui/vendor/glm"
 IncludeDir["Glad"] = "%{wks.location}/gui/vendor/Glad/include"
 
-
 LibraryDir = {}
 
 Library = {}

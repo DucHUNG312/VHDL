@@ -69,19 +69,74 @@ namespace GUI
 		ImGuiIO& io = ImGui::GetIO();
 		ImGuiStyle& style = ImGui::GetStyle();
 		float minWinSizeX = style.WindowMinSize.x;
-		style.WindowMinSize.x = 370.0f;
+		float minWinSizeY = style.WindowMinSize.y;
+		style.WindowMinSize.x = 250.0f;
+		style.WindowMinSize.y = 160.0f;
 		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
 		{
 			ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 		}
 		style.WindowMinSize.x = minWinSizeX;
+		style.WindowMinSize.y = minWinSizeY;
 
 		// Setting window
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
-		// Viewport window
-		ImGui::Begin("Application");
 		ImGui::ShowDemoWindow(&show_demo_window);
+		// Setting window
+		ImGui::Begin("Port Settings", nullptr, ImGuiWindowFlags_NoScrollbar);
+		{
+			ImGui::PushItemWidth(80);
+			{
+				ImGui::Text("Port Name");
+				ImGui::SameLine(170);
+				const char* portNameOptions[] = { "AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO" };
+				static int item_current_idx_1 = 0; // Here we store our selection data as an index.
+				CreatePortSettingOption(portNameOptions, IM_ARRAYSIZE(portNameOptions), item_current_idx_1, "##combo_id_1");
+			}
+
+			{
+				ImGui::Text("Baud Rate");
+				ImGui::SameLine(170);
+				const char* baudRateOptions[] = { "4800", "9600", "14400", "19200", "38400", "57600", "115200", "128000", "256000" };
+				static int item_current_idx_2 = 0; // Here we store our selection data as an index.
+				CreatePortSettingOption(baudRateOptions, IM_ARRAYSIZE(baudRateOptions), item_current_idx_2, "##combo_id_2");
+			}
+
+			{
+				ImGui::Text("Parity");
+				ImGui::SameLine(170);
+				const char* parityOptions[] = { "None", "Even", "Odd" };
+				static int item_current_idx_3 = 0; // Here we store our selection data as an index.
+				CreatePortSettingOption(parityOptions, IM_ARRAYSIZE(parityOptions), item_current_idx_3, "##combo_id_3");
+			}
+
+			{
+				ImGui::Text("Data Bit");
+				ImGui::SameLine(170);
+				const char* dataBitOptions[] = { "None", "5", "6", "7", "8" };
+				static int item_current_idx_4 = 0; // Here we store our selection data as an index.
+				CreatePortSettingOption(dataBitOptions, IM_ARRAYSIZE(dataBitOptions), item_current_idx_4, "##combo_id_4");
+			}
+
+			{
+				ImGui::Text("Stop Bit");
+				ImGui::SameLine(170);
+				const char* stopBitOptions[] = { "None", "1", "2" };
+				static int item_current_idx_5 = 0; // Here we store our selection data as an index.
+				CreatePortSettingOption(stopBitOptions, IM_ARRAYSIZE(stopBitOptions), item_current_idx_5, "##combo_id_5");
+			}
+			ImGui::PopItemWidth();
+		}
+		ImGui::End();
+
+		ImGui::Begin("Data Plot");
+		ImGui::End();
+
+		ImGui::Begin("Receive");
+		ImGui::End();
+
+		ImGui::Begin("Send");
 		ImGui::End();
 		ImGui::PopStyleVar();
 		ImGui::End();
@@ -104,5 +159,24 @@ namespace GUI
 	bool ApplicationLayer::OnMouseButtonPressed(MouseButtonEvent& e)
 	{
 		return false;
+	}
+
+	void ApplicationLayer::CreatePortSettingOption(const char** options, int itemCount, int& currentItemIndex, const char* comboId)
+	{
+		const char* combo_preview_value = options[currentItemIndex];  // Pass in the preview value visible before opening the combo (it could be anything)
+		if (ImGui::BeginCombo(comboId, combo_preview_value))
+		{
+			for (int n = 0; n < itemCount; n++)
+			{
+				const bool is_selected = (currentItemIndex == n);
+				if (ImGui::Selectable(options[n], is_selected))
+					currentItemIndex = n;
+
+				// Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
 	}
 }

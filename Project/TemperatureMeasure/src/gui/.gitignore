@@ -18,3 +18,4 @@ __pycache__
 
 # Directories
 scripts/__pycache__
+gui/vendor/boost_1_82_0

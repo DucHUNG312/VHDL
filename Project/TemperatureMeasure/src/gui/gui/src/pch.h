@@ -24,6 +24,7 @@
 #include <thread>
 #include <string_view>
 #include <deque>
+#include <span>
 
 #include "GUI/Core/Assert.h"
 #include "GUI/Core/Base.h"

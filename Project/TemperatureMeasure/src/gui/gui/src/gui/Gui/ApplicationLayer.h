@@ -22,5 +22,7 @@ namespace GUI
 	private:
 		bool OnKeyPressed(KeyPressedEvent& e);
 		bool OnMouseButtonPressed(MouseButtonEvent& e);
+
+		void CreatePortSettingOption(const char** options, int itemCount, int& currentItemIndex, const char* comboId);
 	};
 }
