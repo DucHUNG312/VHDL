@@ -18,6 +18,9 @@ project "gui"
 		"vendor/implot/**.cpp",
 		"vendor/glm/glm/**.hpp",
 		"vendor/glm/glm/**.inl",
+		"vendor/boost_1_82_0/boost/asio/**.hpp",
+		"vendor/boost_1_82_0/boost/asio/**.h",
+		"vendor/boost_1_82_0/boost/config/**.hpp",
 	}
 
 	defines
@@ -32,6 +35,7 @@ project "gui"
 		"src",
 		"vendor/spdlog/include",
 		"vendor/implot",
+		"vendor/boost_1_82_0",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.glm}",

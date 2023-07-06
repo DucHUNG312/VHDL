@@ -4,7 +4,9 @@
 #include "GUI/Events/Event.h"
 #include "GUI/Events/KeyEvent.h"
 #include "GUI/Events/MouseEvent.h"
-#include "gui/Core/Base.h"
+#include "GUI/Core/Base.h"
+
+#include <boost/asio.hpp>
 
 namespace GUI
 {
