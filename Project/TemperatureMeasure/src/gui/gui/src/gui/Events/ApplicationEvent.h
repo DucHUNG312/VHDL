@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gui/Events/Event.h"
+#include "GUI/Events/Event.h"
 
 namespace GUI {
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "pch.h"
-#include "gui/Core/Base.h"
+#include "GUI/Core/Base.h"
 
 namespace GUI {
 	// Events in GUI are currently blocking, meaning when an event occurs it

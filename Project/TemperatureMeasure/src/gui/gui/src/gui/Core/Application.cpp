@@ -2,6 +2,7 @@
 #include "GUI/Core/Application.h"
 #include "GUI/Core/Input.h"
 #include "GUI/Renderer/Renderer.h"
+#include "gui/Gui/ApplicationLayer.h"
 #include <GLFW/glfw3.h>
 
 
@@ -23,6 +24,7 @@ namespace GUI {
 
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
+		PushLayer(new ApplicationLayer());
 	}
 
 	Application::~Application()

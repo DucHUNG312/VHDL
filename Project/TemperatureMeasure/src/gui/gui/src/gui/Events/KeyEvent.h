@@ -1,7 +1,7 @@
 #pragma once
 
-#include "gui/Events/Event.h"
-#include "gui/Core/KeyCodes.h"
+#include "GUI/Events/Event.h"
+#include "GUI/Core/KeyCodes.h"
 
 namespace GUI {
 
