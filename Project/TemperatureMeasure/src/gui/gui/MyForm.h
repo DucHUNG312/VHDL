@@ -379,7 +379,7 @@ namespace gui {
 		parityOptions->Items->AddRange(parity);
 		parityOptions->SelectedIndex = 0;
 
-		array<Object^>^ stopBits = { "None", "1", "1.5", "2"};
+		array<Object^>^ stopBits = { 1, 2, 3 };
 		stopBitsOptions->Items->AddRange(stopBits);
 		stopBitsOptions->SelectedIndex = 0;
 	}
@@ -412,7 +412,7 @@ namespace gui {
 				serialPort->BaudRate = Int32::Parse(baudRateOptions->Text);
 				serialPort->DataBits = Int32::Parse(dataBitsOptions->Text);
 				serialPort->Parity = ParityParseStringToEnum(parityOptions->Text);
-				serialPort->StopBits = StopBitsParseStringsEnum(stopBitsOptions->Text);
+				serialPort->StopBits = StopBitsParseIntToEnum(Int32::Parse(stopBitsOptions->Text));
 				connectButton->Text = "Disconnect";
 			}
 			else if (connectButton->Text == "Disconnect")
@@ -448,12 +448,11 @@ namespace gui {
 		else return System::IO::Ports::Parity::None;
 	}
 
-	private: System::IO::Ports::StopBits StopBitsParseStringsEnum(System::String^ string)
+	private: System::IO::Ports::StopBits StopBitsParseIntToEnum(int value)
 	{
-		if (string == "None") return System::IO::Ports::StopBits::None;
-		if (string == "1") return System::IO::Ports::StopBits::One;
-		if (string == "1.5") return System::IO::Ports::StopBits::OnePointFive;
-		if (string == "2") return System::IO::Ports::StopBits::Two;
+		if (value == 1) return System::IO::Ports::StopBits::One;
+		if (value == 1.5) return System::IO::Ports::StopBits::OnePointFive;
+		if (value == 2) return System::IO::Ports::StopBits::Two;
 		else return System::IO::Ports::StopBits::None;
 	}
 
