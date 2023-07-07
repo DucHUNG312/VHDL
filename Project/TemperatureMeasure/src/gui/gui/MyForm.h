@@ -115,8 +115,9 @@ namespace gui {
 			// 
 			this->portNameLabel->AutoSize = true;
 			this->portNameLabel->Font = (gcnew System::Drawing::Font(L"Arial", 10));
-			this->portNameLabel->ForeColor = System::Drawing::SystemColors::ActiveCaptionText;
-			this->portNameLabel->Location = System::Drawing::Point(27, 23);
+			this->portNameLabel->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->portNameLabel->Location = System::Drawing::Point(31, 27);
+			this->portNameLabel->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->portNameLabel->Name = L"portNameLabel";
 			this->portNameLabel->Size = System::Drawing::Size(73, 16);
 			this->portNameLabel->TabIndex = 0;
@@ -127,8 +128,9 @@ namespace gui {
 			// 
 			this->stopBitLabel->AutoSize = true;
 			this->stopBitLabel->Font = (gcnew System::Drawing::Font(L"Arial", 10));
-			this->stopBitLabel->ForeColor = System::Drawing::SystemColors::ActiveCaptionText;
-			this->stopBitLabel->Location = System::Drawing::Point(27, 169);
+			this->stopBitLabel->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->stopBitLabel->Location = System::Drawing::Point(31, 195);
+			this->stopBitLabel->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->stopBitLabel->Name = L"stopBitLabel";
 			this->stopBitLabel->Size = System::Drawing::Size(63, 16);
 			this->stopBitLabel->TabIndex = 1;
@@ -139,8 +141,9 @@ namespace gui {
 			// 
 			this->baudRateLabel->AutoSize = true;
 			this->baudRateLabel->Font = (gcnew System::Drawing::Font(L"Arial", 10));
-			this->baudRateLabel->ForeColor = System::Drawing::SystemColors::ActiveCaptionText;
-			this->baudRateLabel->Location = System::Drawing::Point(26, 58);
+			this->baudRateLabel->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->baudRateLabel->Location = System::Drawing::Point(30, 67);
+			this->baudRateLabel->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->baudRateLabel->Name = L"baudRateLabel";
 			this->baudRateLabel->Size = System::Drawing::Size(74, 16);
 			this->baudRateLabel->TabIndex = 2;
@@ -151,8 +154,9 @@ namespace gui {
 			// 
 			this->parityLabel->AutoSize = true;
 			this->parityLabel->Font = (gcnew System::Drawing::Font(L"Arial", 10));
-			this->parityLabel->ForeColor = System::Drawing::SystemColors::ActiveCaptionText;
-			this->parityLabel->Location = System::Drawing::Point(26, 131);
+			this->parityLabel->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->parityLabel->Location = System::Drawing::Point(30, 151);
+			this->parityLabel->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->parityLabel->Name = L"parityLabel";
 			this->parityLabel->Size = System::Drawing::Size(43, 16);
 			this->parityLabel->TabIndex = 3;
@@ -162,8 +166,9 @@ namespace gui {
 			// 
 			this->dataBitLabel->AutoSize = true;
 			this->dataBitLabel->Font = (gcnew System::Drawing::Font(L"Arial", 10));
-			this->dataBitLabel->ForeColor = System::Drawing::SystemColors::ActiveCaptionText;
-			this->dataBitLabel->Location = System::Drawing::Point(26, 93);
+			this->dataBitLabel->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->dataBitLabel->Location = System::Drawing::Point(30, 107);
+			this->dataBitLabel->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->dataBitLabel->Name = L"dataBitLabel";
 			this->dataBitLabel->Size = System::Drawing::Size(64, 16);
 			this->dataBitLabel->TabIndex = 4;
@@ -172,52 +177,73 @@ namespace gui {
 			// 
 			// portNameOptions
 			// 
+			this->portNameOptions->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
+			this->portNameOptions->Font = (gcnew System::Drawing::Font(L"Arial", 9));
+			this->portNameOptions->ForeColor = System::Drawing::SystemColors::InfoText;
 			this->portNameOptions->FormattingEnabled = true;
-			this->portNameOptions->Location = System::Drawing::Point(138, 22);
+			this->portNameOptions->Location = System::Drawing::Point(161, 25);
+			this->portNameOptions->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 			this->portNameOptions->Name = L"portNameOptions";
-			this->portNameOptions->Size = System::Drawing::Size(87, 21);
+			this->portNameOptions->Size = System::Drawing::Size(101, 23);
 			this->portNameOptions->TabIndex = 5;
 			// 
 			// baudRateOptions
 			// 
+			this->baudRateOptions->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
+			this->baudRateOptions->Font = (gcnew System::Drawing::Font(L"Arial", 9));
+			this->baudRateOptions->ForeColor = System::Drawing::SystemColors::InfoText;
 			this->baudRateOptions->FormattingEnabled = true;
-			this->baudRateOptions->Location = System::Drawing::Point(138, 58);
+			this->baudRateOptions->Location = System::Drawing::Point(161, 67);
+			this->baudRateOptions->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 			this->baudRateOptions->Name = L"baudRateOptions";
-			this->baudRateOptions->Size = System::Drawing::Size(87, 21);
+			this->baudRateOptions->Size = System::Drawing::Size(101, 23);
 			this->baudRateOptions->TabIndex = 6;
 			// 
 			// stopBitsOptions
 			// 
+			this->stopBitsOptions->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
+			this->stopBitsOptions->Font = (gcnew System::Drawing::Font(L"Arial", 9));
+			this->stopBitsOptions->ForeColor = System::Drawing::SystemColors::InfoText;
 			this->stopBitsOptions->FormattingEnabled = true;
-			this->stopBitsOptions->Location = System::Drawing::Point(138, 169);
+			this->stopBitsOptions->Location = System::Drawing::Point(161, 195);
+			this->stopBitsOptions->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 			this->stopBitsOptions->Name = L"stopBitsOptions";
-			this->stopBitsOptions->Size = System::Drawing::Size(87, 21);
+			this->stopBitsOptions->Size = System::Drawing::Size(101, 23);
 			this->stopBitsOptions->TabIndex = 7;
 			// 
 			// parityOptions
 			// 
+			this->parityOptions->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
+			this->parityOptions->Font = (gcnew System::Drawing::Font(L"Arial", 9));
+			this->parityOptions->ForeColor = System::Drawing::SystemColors::InfoText;
 			this->parityOptions->FormattingEnabled = true;
-			this->parityOptions->Location = System::Drawing::Point(138, 131);
+			this->parityOptions->Location = System::Drawing::Point(161, 151);
+			this->parityOptions->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 			this->parityOptions->Name = L"parityOptions";
-			this->parityOptions->Size = System::Drawing::Size(87, 21);
+			this->parityOptions->Size = System::Drawing::Size(101, 23);
 			this->parityOptions->TabIndex = 8;
-			this->parityOptions->Text = L"None";
 			// 
 			// dataBitsOptions
 			// 
+			this->dataBitsOptions->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
+			this->dataBitsOptions->Font = (gcnew System::Drawing::Font(L"Arial", 9));
+			this->dataBitsOptions->ForeColor = System::Drawing::SystemColors::InfoText;
 			this->dataBitsOptions->FormattingEnabled = true;
-			this->dataBitsOptions->Location = System::Drawing::Point(138, 93);
+			this->dataBitsOptions->Location = System::Drawing::Point(161, 107);
+			this->dataBitsOptions->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 			this->dataBitsOptions->Name = L"dataBitsOptions";
-			this->dataBitsOptions->Size = System::Drawing::Size(87, 21);
+			this->dataBitsOptions->Size = System::Drawing::Size(101, 23);
 			this->dataBitsOptions->TabIndex = 9;
+			this->dataBitsOptions->SelectedIndexChanged += gcnew System::EventHandler(this, &MyForm::dataBitsOptions_SelectedIndexChanged);
 			// 
 			// connectButton
 			// 
-			this->connectButton->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->connectButton->Location = System::Drawing::Point(23, 208);
+			this->connectButton->Font = (gcnew System::Drawing::Font(L"Arial", 9));
+			this->connectButton->ForeColor = System::Drawing::SystemColors::InfoText;
+			this->connectButton->Location = System::Drawing::Point(27, 240);
+			this->connectButton->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 			this->connectButton->Name = L"connectButton";
-			this->connectButton->Size = System::Drawing::Size(77, 21);
+			this->connectButton->Size = System::Drawing::Size(90, 24);
 			this->connectButton->TabIndex = 10;
 			this->connectButton->Text = L"Connect";
 			this->connectButton->UseVisualStyleBackColor = true;
@@ -225,19 +251,21 @@ namespace gui {
 			// 
 			// dataReceived
 			// 
-			this->dataReceived->Location = System::Drawing::Point(324, 22);
+			this->dataReceived->Location = System::Drawing::Point(378, 25);
+			this->dataReceived->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 			this->dataReceived->Multiline = true;
 			this->dataReceived->Name = L"dataReceived";
 			this->dataReceived->ReadOnly = true;
-			this->dataReceived->Size = System::Drawing::Size(409, 125);
+			this->dataReceived->Size = System::Drawing::Size(476, 144);
 			this->dataReceived->TabIndex = 11;
 			// 
 			// receiveLabel
 			// 
 			this->receiveLabel->AutoSize = true;
 			this->receiveLabel->Font = (gcnew System::Drawing::Font(L"Arial", 10));
-			this->receiveLabel->ForeColor = System::Drawing::SystemColors::ActiveCaptionText;
-			this->receiveLabel->Location = System::Drawing::Point(260, 22);
+			this->receiveLabel->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->receiveLabel->Location = System::Drawing::Point(303, 25);
+			this->receiveLabel->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->receiveLabel->Name = L"receiveLabel";
 			this->receiveLabel->Size = System::Drawing::Size(58, 16);
 			this->receiveLabel->TabIndex = 13;
@@ -248,8 +276,9 @@ namespace gui {
 			// 
 			this->plotLabel->AutoSize = true;
 			this->plotLabel->Font = (gcnew System::Drawing::Font(L"Arial", 10));
-			this->plotLabel->ForeColor = System::Drawing::SystemColors::ActiveCaptionText;
-			this->plotLabel->Location = System::Drawing::Point(287, 169);
+			this->plotLabel->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->plotLabel->Location = System::Drawing::Point(335, 195);
+			this->plotLabel->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->plotLabel->Name = L"plotLabel";
 			this->plotLabel->Size = System::Drawing::Size(31, 16);
 			this->plotLabel->TabIndex = 14;
@@ -260,8 +289,9 @@ namespace gui {
 			// 
 			this->groupNumberLabel->AutoSize = true;
 			this->groupNumberLabel->Font = (gcnew System::Drawing::Font(L"Arial", 12, System::Drawing::FontStyle::Bold));
-			this->groupNumberLabel->ForeColor = System::Drawing::SystemColors::ActiveCaptionText;
-			this->groupNumberLabel->Location = System::Drawing::Point(25, 362);
+			this->groupNumberLabel->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->groupNumberLabel->Location = System::Drawing::Point(29, 418);
+			this->groupNumberLabel->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->groupNumberLabel->Name = L"groupNumberLabel";
 			this->groupNumberLabel->Size = System::Drawing::Size(90, 19);
 			this->groupNumberLabel->TabIndex = 15;
@@ -272,8 +302,9 @@ namespace gui {
 			// 
 			this->classNameLabel->AutoSize = true;
 			this->classNameLabel->Font = (gcnew System::Drawing::Font(L"Arial", 12, System::Drawing::FontStyle::Bold));
-			this->classNameLabel->ForeColor = System::Drawing::SystemColors::ActiveCaptionText;
-			this->classNameLabel->Location = System::Drawing::Point(25, 407);
+			this->classNameLabel->ForeColor = System::Drawing::SystemColors::ButtonFace;
+			this->classNameLabel->Location = System::Drawing::Point(29, 470);
+			this->classNameLabel->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->classNameLabel->Name = L"classNameLabel";
 			this->classNameLabel->Size = System::Drawing::Size(207, 19);
 			this->classNameLabel->TabIndex = 16;
@@ -282,20 +313,25 @@ namespace gui {
 			// 
 			// sendData
 			// 
-			this->sendData->Location = System::Drawing::Point(324, 405);
+			this->sendData->BackColor = System::Drawing::SystemColors::Window;
+			this->sendData->Font = (gcnew System::Drawing::Font(L"Arial", 9));
+			this->sendData->ForeColor = System::Drawing::SystemColors::InfoText;
+			this->sendData->Location = System::Drawing::Point(378, 467);
+			this->sendData->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 			this->sendData->Multiline = true;
 			this->sendData->Name = L"sendData";
-			this->sendData->Size = System::Drawing::Size(326, 21);
+			this->sendData->Size = System::Drawing::Size(380, 24);
 			this->sendData->TabIndex = 18;
 			this->sendData->TextChanged += gcnew System::EventHandler(this, &MyForm::textBox1_TextChanged);
 			// 
 			// sendButton
 			// 
-			this->sendButton->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->sendButton->Location = System::Drawing::Point(656, 405);
+			this->sendButton->Font = (gcnew System::Drawing::Font(L"Arial", 9));
+			this->sendButton->ForeColor = System::Drawing::SystemColors::InfoText;
+			this->sendButton->Location = System::Drawing::Point(765, 467);
+			this->sendButton->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 			this->sendButton->Name = L"sendButton";
-			this->sendButton->Size = System::Drawing::Size(77, 21);
+			this->sendButton->Size = System::Drawing::Size(90, 24);
 			this->sendButton->TabIndex = 19;
 			this->sendButton->Text = L"Send";
 			this->sendButton->UseVisualStyleBackColor = true;
@@ -314,25 +350,25 @@ namespace gui {
 			this->dataChart->ChartAreas->Add(chartArea1);
 			legend1->Name = L"Legend1";
 			this->dataChart->Legends->Add(legend1);
-			this->dataChart->Location = System::Drawing::Point(324, 169);
-			this->dataChart->Margin = System::Windows::Forms::Padding(1);
+			this->dataChart->Location = System::Drawing::Point(378, 195);
+			this->dataChart->Margin = System::Windows::Forms::Padding(0);
 			this->dataChart->Name = L"dataChart";
 			series1->ChartArea = L"ChartArea1";
 			series1->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Line;
 			series1->Legend = L"Legend1";
-			series1->Name = L"Series1";
+			series1->Name = L"Temperature";
 			this->dataChart->Series->Add(series1);
-			this->dataChart->Size = System::Drawing::Size(409, 212);
+			this->dataChart->Size = System::Drawing::Size(477, 245);
 			this->dataChart->TabIndex = 20;
 			this->dataChart->Text = L"DataPlot";
 			this->dataChart->Click += gcnew System::EventHandler(this, &MyForm::dataChart_Click);
 			// 
 			// MyForm
 			// 
-			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
+			this->AutoScaleDimensions = System::Drawing::SizeF(7, 15);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->BackColor = System::Drawing::SystemColors::ButtonHighlight;
-			this->ClientSize = System::Drawing::Size(762, 470);
+			this->BackColor = System::Drawing::SystemColors::WindowFrame;
+			this->ClientSize = System::Drawing::Size(889, 542);
 			this->Controls->Add(this->dataChart);
 			this->Controls->Add(this->sendButton);
 			this->Controls->Add(this->sendData);
@@ -352,6 +388,9 @@ namespace gui {
 			this->Controls->Add(this->baudRateLabel);
 			this->Controls->Add(this->stopBitLabel);
 			this->Controls->Add(this->portNameLabel);
+			this->Font = (gcnew System::Drawing::Font(L"Arial", 9));
+			this->ForeColor = System::Drawing::Color::Transparent;
+			this->Margin = System::Windows::Forms::Padding(4, 3, 4, 3);
 			this->Name = L"MyForm";
 			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
 			this->Text = L"Temperature Measure GUI";
@@ -379,7 +418,7 @@ namespace gui {
 		parityOptions->Items->AddRange(parity);
 		parityOptions->SelectedIndex = 0;
 
-		array<Object^>^ stopBits = { 1, 2, 3 };
+		array<Object^>^ stopBits = { 1, 2 };
 		stopBitsOptions->Items->AddRange(stopBits);
 		stopBitsOptions->SelectedIndex = 0;
 	}
@@ -451,7 +490,6 @@ namespace gui {
 	private: System::IO::Ports::StopBits StopBitsParseIntToEnum(int value)
 	{
 		if (value == 1) return System::IO::Ports::StopBits::One;
-		if (value == 1.5) return System::IO::Ports::StopBits::OnePointFive;
 		if (value == 2) return System::IO::Ports::StopBits::Two;
 		else return System::IO::Ports::StopBits::None;
 	}
@@ -460,11 +498,13 @@ namespace gui {
 	{
 		String^ receivedData = serialPort->ReadLine();
 		dataReceived->AppendText(receivedData + "\n");
-		dataChart->Series["Series1"]->Points->AddY(Double::Parse(receivedData));
+		dataChart->Series["Temperature"]->Points->AddY(Double::Parse(receivedData));
 	}
 
 	private: System::Void serialPort_PinChanged(System::Object^ sender, System::IO::Ports::SerialPinChangedEventArgs^ e) {
 		MessageBox::Show("Port Changed");
 	}
+private: System::Void dataBitsOptions_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
+}
 };
 }
