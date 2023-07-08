@@ -10,8 +10,6 @@
 -- @file:            pwm.vhd
 --
 -- @date:            14/06/2023
---
--- @description:
 -- ==================================================================================================================
 -- Permission is hereby granted, free of charge, to any person obtaining
 -- a copy of this software and associated documentation files (the
