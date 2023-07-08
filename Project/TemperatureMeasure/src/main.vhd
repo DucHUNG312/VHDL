@@ -163,11 +163,11 @@ begin
             busy                                  => dont_transmit                                                            
         );
 
-    process(dont_transmit)
-        begin
-        if rising_edge(dont_transmit) then
-            channel <= not channel;
-        end if;
-    end process;
+    -- process(dont_transmit)
+    --    begin
+    --    if rising_edge(dont_transmit) then
+    --        channel <= not channel;
+    --    end if;
+    -- end process;
 
 end architecture rtl;
