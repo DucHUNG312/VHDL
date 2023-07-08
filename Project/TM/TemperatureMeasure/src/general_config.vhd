@@ -7,7 +7,7 @@
 --
 -- @maintainer:      Le Vu Duc Hung
 --
--- @file:            config.vhd
+-- @file:            general_config.vhd
 --
 -- @date:            13/06/2023
 -- ==================================================================================================================
@@ -49,7 +49,6 @@ package general_config is
         adc_clk_div:                positive;
         pwm_clk_div:                positive;
         uart_clk_div:               positive;
-        adc_sampling_div:           positive;
         adc_state_bits:             positive;
 		led_data_bits:              positive;
         led_decode_bits:            positive; 
@@ -66,7 +65,6 @@ package general_config is
         adc_clk_div                 => 125,
         pwm_clk_div                 => 19,
         uart_clk_div                => 2604, -- 19200 bps
-        adc_sampling_div            => 40,
         adc_state_bits              => 4,
         led_data_bits               => 4,
         led_decode_bits             => 7,
@@ -105,19 +103,6 @@ package general_config is
             frequency_out: out std_ulogic
         );
     end component uart_baud_generator;
-
-
-    --===================================== FREQUENCY_DIVIDER_LOW ====================================--
-    component adc_frequency_divider_low is
-        generic (
-            config: project_config := default_config
-        );
-        port (
-            clk:           in std_ulogic;
-            frequency_out: out std_ulogic
-        );
-    end component adc_frequency_divider_low;
-
 
     --============================================ COUNTER ============================================--
     component adc_counter is
@@ -159,7 +144,6 @@ package general_config is
             adc_data_in:            out std_ulogic;
             adc_chip_select:        out std_ulogic;
             adc_clk:                out std_ulogic;
-            clk_sampling:           out std_ulogic;
             measured_values_1:      out std_ulogic_vector(config.data_bits - 1 downto 0);
             measured_values_2:      out std_ulogic_vector(config.data_bits - 1 downto 0)
         );

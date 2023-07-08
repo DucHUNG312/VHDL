@@ -12,7 +12,7 @@
 -- @date:            13/06/2023
 --
 -- @description:     This file contains the top-level entity and architecture for the ADC0832 module. It implements
---                   the interface and functionality of the ADC module, including clock division, sampling,
+--                   the interface and functionality of the ADC module, including clock division
 --                   state management, data shifting, and output generation. The measured values are output through 
 --                   "measured_values_1" and "measured_values_2" ports. 
 -- ==================================================================================================================
@@ -52,7 +52,6 @@ entity adc_top is
         adc_data_in:            out std_ulogic;
         adc_chip_select:        out std_ulogic;
         adc_clk:                out std_ulogic;
-        clk_sampling:           out std_ulogic; -- Sampling clock (not used by the chip, but may be used to synchronize to other hardware blocks, such as controllers). When this signal is zero, the chip is sampling
         measured_values_1:      out std_ulogic_vector(config.data_bits - 1 downto 0);
         measured_values_2:      out std_ulogic_vector(config.data_bits - 1 downto 0)
     );
@@ -63,8 +62,7 @@ architecture rtl of adc_top is
 -- ===================================================================================================================
 -- |        Signals          |                                   Data Type                    |         Value        |
 -- ===================================================================================================================
-    signal clk               :       std_ulogic                                               := '0';
-    signal sampling          :       std_ulogic                                               := '0';
+    signal clk               :       std_ulogic                                               := '0';                                          
     signal state             :       std_ulogic_vector(3 downto 0)                            := (others => '0');
     signal reset             :       std_ulogic                                               := '0';
     signal end_reception     :       std_ulogic                                               := '0';
@@ -84,17 +82,6 @@ begin
     port map (
         clk            => clk_in,
         frequency_out  => clk
-    );
-
-
-    --======================================= FREQUENCY_DIVIDER_LOW_INSTANCE ========================================--
-    SAMPLING_DIVIDER: adc_frequency_divider_low
-    generic map (
-        config         => config
-    )
-    port map (
-        clk            => clk,
-        frequency_out  => sampling
     );
 
     --============================================ ADC_COUNTER_INSTANCE ===============================================--
@@ -126,7 +113,7 @@ begin
     RESET_SIGNAL: process(clk)
     begin
         if rising_edge(clk) then
-            reset <= sampling or (end_reception and (not channel)); 
+            reset <= end_reception and (not channel); 
         end if;
     end process RESET_SIGNAL; 
     
@@ -164,6 +151,5 @@ begin
     adc_clk <= clk;
     adc_chip_select <= reset;
     adc_data_in <= data_in;
-    clk_sampling <= sampling;
 
 end architecture rtl;

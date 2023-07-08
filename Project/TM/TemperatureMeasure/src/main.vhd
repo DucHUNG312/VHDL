@@ -83,7 +83,6 @@ begin
         adc_data_in         => adc_data_in,
         adc_chip_select     => adc_chip_select,
         adc_clk             => adc_clk,
-        clk_sampling        => open,
         measured_values_1   => measured_values_1,
         measured_values_2   => measured_values_2
     );
