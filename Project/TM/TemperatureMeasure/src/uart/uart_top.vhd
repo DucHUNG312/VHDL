@@ -59,7 +59,7 @@ entity uart_top is
     signal data:                  std_ulogic_vector(data_in'range)             := (others => '0');
     signal parity_bit:            std_ulogic                                   := '0';
   begin
-    clock_divider: uart_frequency_divider
+    clock_divider: uart_baud_generator
     generic map (
         config          => config
     )

@@ -7,7 +7,7 @@
 --
 -- @maintainer:      Le Vu Duc Hung
 --
--- @file:            uart_frequency_divider.vhd
+-- @file:            uart_baud_generator.vhd
 --
 -- @date:            13/06/2023
 --
@@ -42,7 +42,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use work.general_config.all;
 
-entity uart_frequency_divider is
+entity uart_baud_generator is
     generic (
         config: project_config := default_config
     );
@@ -50,9 +50,9 @@ entity uart_frequency_divider is
         clk:           in std_ulogic;
         frequency_out: out std_ulogic
     );
-end entity uart_frequency_divider;
+end entity uart_baud_generator;
 
-architecture rtl of uart_frequency_divider is
+architecture rtl of uart_baud_generator is
 
     --================================= Constants =====================================--
     constant max:         integer := config.uart_clk_div - 1;
@@ -64,7 +64,7 @@ architecture rtl of uart_frequency_divider is
     signal rise_square_wave: std_ulogic              := '0';
     signal fall_square_wave: std_ulogic              := '0';
 begin
-    UART_FREQUENCY_DIVIDER : process(clk)
+    uart_baud_generator : process(clk)
     begin
         if rising_edge(clk) then
             if counter = max then
@@ -87,7 +87,7 @@ begin
                 end if;
             end if;
         end if;
-    end process UART_FREQUENCY_DIVIDER; 
+    end process uart_baud_generator; 
 
     -- Connect IO
     frequency_out <= rise_square_wave when (div_is_even or (not config.ratio_must_be_half)) else (rise_square_wave or fall_square_wave);

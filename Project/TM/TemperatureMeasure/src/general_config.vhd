@@ -96,7 +96,7 @@ package general_config is
         );
     end component pwm_frequency_divider;
 
-    component uart_frequency_divider is
+    component uart_baud_generator is
         generic (
             config: project_config := default_config
         );
@@ -104,7 +104,7 @@ package general_config is
             clk:           in std_ulogic;
             frequency_out: out std_ulogic
         );
-    end component uart_frequency_divider;
+    end component uart_baud_generator;
 
 
     --===================================== FREQUENCY_DIVIDER_LOW ====================================--
