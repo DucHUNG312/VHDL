@@ -74,22 +74,6 @@ begin
       g_uints => g_units
     );
 
-  pwm1: entity work.pwm
-    generic map ( div => 19, bits => first_value'length )
-    port map (
-      clk_in => clk50MHz,
-      ratio => first_value,
-      output => led_green
-    );
-  
-  pwm2: entity work.pwm
-    generic map ( div => 19, bits => second_value'length )
-    port map (
-      clk_in => clk50MHz,
-      ratio => second_value,
-      output => led_red
-    );
-
   byte_to_transmit <= second_value when channel = '1' else first_value;
   serial: entity work.serial_tx
     generic map (
@@ -103,10 +87,10 @@ begin
       busy => dont_transmit
     );
 
-  process(dont_transmit)
-    begin
-    if rising_edge(dont_transmit) then
-      channel <= not channel;
-    end if;
-  end process;
+  -- process(dont_transmit)
+  --   begin
+  --   if rising_edge(dont_transmit) then
+  --     channel <= not channel;
+  --   end if;
+  -- end process;
 end architecture;
