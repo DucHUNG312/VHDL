@@ -47,11 +47,11 @@ entity adc_counter is
         config: project_config := default_config
     );
     port (
-        clk:           in std_ulogic;
-        reset:         in std_ulogic;
-        enable:        in std_ulogic;
-        count_out:     out std_ulogic_vector(config.adc_state_bits - 1 downto 0);
-        overflow:      out std_ulogic
+        clk:           in std_logic;
+        reset:         in std_logic;
+        enable:        in std_logic;
+        count_out:     out std_logic_vector(config.adc_state_bits - 1 downto 0);
+        overflow:      out std_logic
     );
 end entity adc_counter;
 
@@ -75,7 +75,7 @@ begin
     end process ADC_COUNTER; 
     
     -- Connect IO
-    count_out <= std_ulogic_vector(count);
+    count_out <= std_logic_vector(count);
     overflow <= enable when count = max else '0';
     
 end architecture rtl;

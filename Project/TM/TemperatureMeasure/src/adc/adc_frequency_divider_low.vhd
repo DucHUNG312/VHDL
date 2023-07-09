@@ -7,15 +7,16 @@
 --
 -- @maintainer:      Le Vu Duc Hung
 --
--- @file:            pwm_frequency_divider.vhd
+-- @file:            adc_frequency_divider_low.vhd
 --
 -- @date:            13/06/2023
 --
--- @description:     This file defines an ADC frequency divider module. It takes an input clock signal
---                   (clk) and generates a divided frequency output (frequency_out) The module uses a 
---                   counter to divide the input clock frequency. The divided output waveform is 
---                   generated using a rising square wave and an optional falling square wave if the 
---                   configuration requires the ratio to be half.
+-- @description:     This file defines an ADC frequency divider module with a low output signal.
+--                   The module takes an input clock signal (clk) and generates a divided frequency
+--                   output (frequency_out). The module uses a counter to divide the input clock 
+--                   frequency. The divided output waveform keeps the output signal in a low state 
+--                   most of the time. For only one cycle of the input clock, the output clock is 
+--                   in a high state.
 -- ==================================================================================================================
 -- Permission is hereby granted, free of charge, to any person obtaining
 -- a copy of this software and associated documentation files (the
@@ -42,54 +43,39 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use work.general_config.all;
 
-entity pwm_frequency_divider is
+entity adc_frequency_divider_low is
     generic (
         config: project_config := default_config
     );
     port (
-        clk:           in std_ulogic;
-        frequency_out: out std_ulogic
+        clk:           in std_logic;
+        frequency_out: out std_logic
     );
-end entity pwm_frequency_divider;
+end entity adc_frequency_divider_low;
 
-architecture rtl of pwm_frequency_divider is
+architecture rtl of adc_frequency_divider_low is
 
     --================================= Constants =====================================--
-    constant max:         integer := config.pwm_clk_div - 1;
-    constant half:        integer := max / 2;
-    constant div_is_even: boolean := ((config.pwm_clk_div mod 2) = 0);
+    constant max: integer := config.adc_sampling_div - 1;
 
     --================================== Signals ======================================--
-    signal counter:          integer range 0 to max  := 0;
-    signal rise_square_wave: std_ulogic              := '0';
-    signal fall_square_wave: std_ulogic              := '0';
+    signal counter:   integer range 0 to max := 0;
+    signal frequency: std_logic             := '0';
 begin
-    PWM_FREQUENCY_DIVIDER : process(clk)
+    FREQUENCY_DIVIDER_LOW: process(clk)
     begin
         if rising_edge(clk) then
             if counter = max then
                 counter <= 0;
-            elsif counter > half and counter < max then
-                counter <= counter + 1;
-                rise_square_wave <= '1';
+                frequency <= '1';
             else
                 counter <= counter + 1;
-                rise_square_wave <= '0';
+                frequency <= '0';
             end if;
         end if;
-
-        if (not div_is_even) and config.ratio_must_be_half then
-            if falling_edge(clk) then
-                if counter > half then
-                    fall_square_wave <= '1';
-                else
-                    fall_square_wave <= '0';
-                end if;
-            end if;
-        end if;
-    end process PWM_FREQUENCY_DIVIDER; 
-
-    -- Connect IO
-    frequency_out <= rise_square_wave when (div_is_even or (not config.ratio_must_be_half)) else (rise_square_wave or fall_square_wave);
+    end process FREQUENCY_DIVIDER_LOW; 
     
+    -- Connect IO
+    frequency_out <= frequency;
+
 end architecture rtl;

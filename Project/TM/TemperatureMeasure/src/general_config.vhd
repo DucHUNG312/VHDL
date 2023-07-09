@@ -49,9 +49,11 @@ package general_config is
         adc_clk_div:                positive;
         pwm_clk_div:                positive;
         uart_clk_div:               positive;
+        adc_sampling_div:           positive;
         adc_state_bits:             positive;
 		led_data_bits:              positive;
         led_decode_bits:            positive; 
+        led_bcd_data:               positive;
         led_inverted_out:           boolean;
         uart_parity:                parity_type;
         uart_stop_bits:             stop_type;
@@ -65,9 +67,11 @@ package general_config is
         adc_clk_div                 => 125,
         pwm_clk_div                 => 19,
         uart_clk_div                => 2604, -- 19200 bps
+        adc_sampling_div            => 40,
         adc_state_bits              => 4,
         led_data_bits               => 4,
         led_decode_bits             => 7,
+        led_bcd_data                => 10,
         led_inverted_out            => true,
         uart_parity                 => none,
         uart_stop_bits              => 1
@@ -79,28 +83,31 @@ package general_config is
             config: project_config := default_config
         );
         port (
-            clk:           in std_ulogic;
-            frequency_out: out std_ulogic
+            clk:           in std_logic;
+            frequency_out: out std_logic
         );
     end component adc_frequency_divider;
 
-    component pwm_frequency_divider is
+    --===================================== FREQUENCY_DIVIDER_LOW ====================================--
+    component adc_frequency_divider_low is
         generic (
             config: project_config := default_config
         );
         port (
-            clk:           in std_ulogic;
-            frequency_out: out std_ulogic
+            clk:           in std_logic;
+            frequency_out: out std_logic
         );
-    end component pwm_frequency_divider;
+    end component adc_frequency_divider_low;
 
+
+    --===================================== BAUD_GEN ====================================--
     component uart_baud_generator is
         generic (
             config: project_config := default_config
         );
         port (
-            clk:           in std_ulogic;
-            frequency_out: out std_ulogic
+            clk:           in std_logic;
+            frequency_out: out std_logic
         );
     end component uart_baud_generator;
 
@@ -110,11 +117,11 @@ package general_config is
             config: project_config := default_config
         );
         port (
-            clk:           in std_ulogic;
-            reset:         in std_ulogic;
-            enable:        in std_ulogic;
-            count_out:     out std_ulogic_vector(config.adc_state_bits - 1 downto 0);
-            overflow:      out std_ulogic
+            clk:           in std_logic;
+            reset:         in std_logic;
+            enable:        in std_logic;
+            count_out:     out std_logic_vector(config.adc_state_bits - 1 downto 0);
+            overflow:      out std_logic
         );
     end component adc_counter;
 
@@ -125,9 +132,9 @@ package general_config is
             config: project_config := default_config
         );
         port (
-            clk:           in std_ulogic;
-            data_in:       in std_ulogic;
-            data_out:      out std_ulogic_vector(config.data_bits - 1 downto 0)
+            clk:           in std_logic;
+            data_in:       in std_logic;
+            data_out:      out std_logic_vector(config.data_bits - 1 downto 0)
         );
     end component adc_shift_register;
 
@@ -138,45 +145,42 @@ package general_config is
             config: project_config := default_config
         );
         port (
-            clk_in:                 in std_ulogic;
-            adc_data_out:           in std_ulogic;
+            clk_in:                 in std_logic;
+            adc_data_out:           in std_logic;
     
-            adc_data_in:            out std_ulogic;
-            adc_chip_select:        out std_ulogic;
-            adc_clk:                out std_ulogic;
-            measured_values_1:      out std_ulogic_vector(config.data_bits - 1 downto 0);
-            measured_values_2:      out std_ulogic_vector(config.data_bits - 1 downto 0)
+            adc_data_in:            out std_logic;
+            adc_chip_select:        out std_logic;
+            adc_clk:                out std_logic;
+            measured_values_1:      out std_logic_vector(config.data_bits - 1 downto 0);
+            measured_values_2:      out std_logic_vector(config.data_bits - 1 downto 0)
         );
     end component adc_top;
 
      --===================================== SEVEN_SEGMENT_DECODER ===================================--
-    component seven_segment_decoder is
+    component led_decoder is
         generic (
             config: project_config := default_config
         );
         port (
-            data_in:    in  std_ulogic_vector(config.led_data_bits - 1 downto 0);
-            a:          out std_ulogic;
-            b:          out std_ulogic;
-            c:          out std_ulogic;
-            d:          out std_ulogic;
-            e:          out std_ulogic;
-            f:          out std_ulogic;
-            g:          out std_ulogic
-        );
-    end component seven_segment_decoder;
+            data_in:    in  std_logic_vector(config.data_bits - 1 downto 0);
 
-    --============================================= PWM =============================================--
-    component pwm is
-        generic (
-            config: project_config := default_config
+            a_tens: out std_logic;
+            b_tens: out std_logic;
+            c_tens: out std_logic;
+            d_tens: out std_logic;
+            e_tens: out std_logic;
+            f_tens: out std_logic;
+            g_tens: out std_logic;
+
+            a_uints: out std_logic;
+            b_uints: out std_logic;
+            c_uints: out std_logic;
+            d_uints: out std_logic;
+            e_uints: out std_logic;
+            f_uints: out std_logic;
+            g_uints: out std_logic
         );
-        port (
-            clk_in:   in  std_ulogic;
-            ratio:    in  std_ulogic_vector(config.data_bits - 1 downto 0);
-            wave_out: out std_ulogic
-        );
-    end component pwm;
+    end component led_decoder;
 
     --============================================= UART =============================================--
     component uart_top is

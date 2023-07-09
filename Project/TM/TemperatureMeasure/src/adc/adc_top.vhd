@@ -46,14 +46,14 @@ entity adc_top is
         config: project_config := default_config
     );
     port (
-        clk_in:                 in std_ulogic; 
-        adc_data_out:           in std_ulogic;
+        clk_in:                 in std_logic; 
+        adc_data_out:           in std_logic;
 
-        adc_data_in:            out std_ulogic;
-        adc_chip_select:        out std_ulogic;
-        adc_clk:                out std_ulogic;
-        measured_values_1:      out std_ulogic_vector(config.data_bits - 1 downto 0);
-        measured_values_2:      out std_ulogic_vector(config.data_bits - 1 downto 0)
+        adc_data_in:            out std_logic;
+        adc_chip_select:        out std_logic;
+        adc_clk:                out std_logic;
+        measured_values_1:      out std_logic_vector(config.data_bits - 1 downto 0);
+        measured_values_2:      out std_logic_vector(config.data_bits - 1 downto 0)
     );
 end entity adc_top;
 
@@ -62,13 +62,14 @@ architecture rtl of adc_top is
 -- ===================================================================================================================
 -- |        Signals          |                                   Data Type                    |         Value        |
 -- ===================================================================================================================
-    signal clk               :       std_ulogic                                               := '0';                                          
-    signal state             :       std_ulogic_vector(3 downto 0)                            := (others => '0');
-    signal reset             :       std_ulogic                                               := '0';
-    signal end_reception     :       std_ulogic                                               := '0';
-    signal shifting_bytes    :       std_ulogic_vector(config.data_bits - 1 downto 0)         := (others => '0');
-    signal channel           :       std_ulogic                                               := '0';
-    signal data_in           :       std_ulogic                                               := '0';
+    signal clk               :       std_logic                                               := '0';    
+    signal sampling          :       std_logic                                               := '0';                                      
+    signal state             :       std_logic_vector(3 downto 0)                            := (others => '0');
+    signal reset             :       std_logic                                               := '0';
+    signal end_reception     :       std_logic                                               := '0';
+    signal shifting_bytes    :       std_logic_vector(config.data_bits - 1 downto 0)         := (others => '0');
+    signal channel           :       std_logic                                               := '0';
+    signal data_in           :       std_logic                                               := '0';
 -- ===================================================================================================================
 
 begin
@@ -82,6 +83,16 @@ begin
     port map (
         clk            => clk_in,
         frequency_out  => clk
+    );
+
+    --======================================= FREQUENCY_DIVIDER_LOW_INSTANCE ========================================--
+    SAMPLING_DIVIDER: adc_frequency_divider_low
+    generic map (
+        config         => config
+    )
+    port map (
+        clk            => clk,
+        frequency_out  => sampling
     );
 
     --============================================ ADC_COUNTER_INSTANCE ===============================================--
@@ -113,7 +124,7 @@ begin
     RESET_SIGNAL: process(clk)
     begin
         if rising_edge(clk) then
-            reset <= end_reception and (not channel); 
+            reset <= sampling or (end_reception and (not channel)); 
         end if;
     end process RESET_SIGNAL; 
     
@@ -127,7 +138,7 @@ begin
             else
                 measured_values_2 <= shifting_bytes;
             end if;
-            channel <= not channel; -- alternately stored data in the 2 channels
+            -- channel <= not channel; -- alternately stored data in the 2 channels
         end if;
     end process STORE_DATA; 
 

@@ -39,22 +39,30 @@ use work.general_config.all;
 
 entity main is
     port (
-        clk:                                  in  std_ulogic;
-        reset:                                in  std_ulogic;
-        adc_data_out:                         in  std_ulogic;
-        adc_clk:                              out std_ulogic;
-        adc_chip_select:                      out std_ulogic;
-        adc_data_in:                          out std_ulogic;
-        a:                                    out std_ulogic;
-        b:                                    out std_ulogic;
-        c:                                    out std_ulogic;
-        d:                                    out std_ulogic;
-        e:                                    out std_ulogic;
-        f:                                    out std_ulogic;
-        g:                                    out std_ulogic;
-        led_green:                            out std_ulogic;
-        led_red:                              out std_ulogic;
-        tx:                                   out std_ulogic
+        clk:                                  in  std_logic;
+        reset:                                in  std_logic;
+        adc_data_out:                         in  std_logic;
+        adc_clk:                              out std_logic;
+        adc_chip_select:                      out std_logic;
+        adc_data_in:                          out std_logic;
+
+        a_tens:                               out std_logic;
+        b_tens:                               out std_logic;
+        c_tens:                               out std_logic;
+        d_tens:                               out std_logic;
+        e_tens:                               out std_logic;
+        f_tens:                               out std_logic;
+        g_tens:                               out std_logic;
+
+        a_uints:                              out std_logic;
+        b_uints:                              out std_logic;
+        c_uints:                              out std_logic;
+        d_uints:                              out std_logic;
+        e_uints:                              out std_logic;
+        f_uints:                              out std_logic;
+        g_uints:                              out std_logic;
+
+        tx:                                   out std_logic
     );
 end entity main;
 
@@ -63,11 +71,11 @@ architecture rtl of main is
 -- =====================================================================================================================================================
 -- |                    Signals                     |                                 Data Type                                    |       Value       |
 -- =====================================================================================================================================================
-    signal measured_values_1                        :     std_ulogic_vector(default_config.data_bits - 1 downto 0)             := (others => 'X');                                                                       
-    signal measured_values_2                        :     std_ulogic_vector(measured_values_1'range)                           := (others => 'X');
-    signal data_to_transmit                         :     std_ulogic_vector(measured_values_1'range)                           := (others => 'X');                               
-    signal dont_transmit                            :     std_ulogic                                                           := '0'; 
-    signal channel                                  :     std_ulogic                                                           := '0'; 
+    signal measured_values_1                        :     std_logic_vector(default_config.data_bits - 1 downto 0)             := (others => 'X');                                                                       
+    signal measured_values_2                        :     std_logic_vector(measured_values_1'range)                           := (others => 'X');
+    signal data_to_transmit                         :     std_logic_vector(measured_values_1'range)                           := (others => 'X');                               
+    signal dont_transmit                            :     std_logic                                                           := '0'; 
+    signal channel                                  :     std_logic                                                           := '0'; 
 -- =====================================================================================================================================================
 
 begin
@@ -88,40 +96,28 @@ begin
     );
 
     --============================================= SEVEN SEGMENT DECODER INSTANCE =============================================--
-    LED_INST: seven_segment_decoder
+    LED_INST: led_decoder
     generic map (
-       config              => default_config
+       config               => default_config
     )
     port map (
-        data_in             => measured_values_1(default_config.data_bits - 1 downto default_config.data_bits - 4),
-        a                   => a,
-        b                   => b,
-        c                   => c,
-        d                   => d,
-        e                   => e,
-        f                   => f,
-        g                   => g
-    );
+        data_in             => measured_values_1(default_config.data_bits - 1 downto 0),
 
-    --============================================= PWM INSTANCE =============================================
-    PWM_INST1: pwm
-    generic map (
-        config              => default_config
-    )
-    port map (
-        clk_in              => clk,
-        ratio               => measured_values_1,
-        wave_out            => led_green
-    );
+        a_tens              => a_tens,
+        b_tens              => b_tens,
+        c_tens              => c_tens,
+        d_tens              => d_tens,
+        e_tens              => e_tens,
+        f_tens              => f_tens,
+        g_tens              => g_tens,
 
-    PWM_INST2: pwm
-    generic map (
-        config              => default_config
-    )
-    port map (
-        clk_in              => clk,
-        ratio               => measured_values_2,
-        wave_out            => led_red
+        a_uints             => a_uints,
+        b_uints             => b_uints,
+        c_uints             => c_uints,
+        d_uints             => d_uints,
+        e_uints             => e_uints,
+        f_uints             => f_uints,
+        g_uints             => g_uints
     );
 
     --============================================= UART INSTANCE =============================================--
@@ -140,11 +136,11 @@ begin
       busy                  => dont_transmit
     );
     
-    process(dont_transmit)
-       begin
-       if rising_edge(dont_transmit) then
-           channel <= not channel;
-       end if;
-    end process;
+    -- process(dont_transmit)
+    --   begin
+    --   if rising_edge(dont_transmit) then
+    --       channel <= not channel;
+    --   end if;
+    -- end process;
 
 end architecture rtl;

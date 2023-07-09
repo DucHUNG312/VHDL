@@ -43,11 +43,11 @@ entity uart_top is
       config: project_config := default_config
     );
   port (
-    clk_in:                  in std_ulogic;
-    transmit:                in std_ulogic;
-    data_in:                 in std_ulogic_vector((config.data_bits - 1) downto 0);
-    tx:                      out std_ulogic;
-    busy:                    out std_ulogic
+    clk_in:                  in std_logic;
+    transmit:                in std_logic;
+    data_in:                 in std_logic_vector((config.data_bits - 1) downto 0);
+    tx:                      out std_logic;
+    busy:                    out std_logic
   );
   end entity uart_top;
   
@@ -55,9 +55,9 @@ entity uart_top is
     constant parity_length:       parity_length := (0, 1, 1, 1, 1);
     constant last_state:          natural := config.data_bits + config.uart_stop_bits + parity_length(config.uart_parity);
     signal state:                 natural range 0 to last_state   := 0;
-    signal clk:                   std_ulogic                                   := '0';
-    signal data:                  std_ulogic_vector(data_in'range)             := (others => '0');
-    signal parity_bit:            std_ulogic                                   := '0';
+    signal clk:                   std_logic                                   := '0';
+    signal data:                  std_logic_vector(data_in'range)             := (others => '0');
+    signal parity_bit:            std_logic                                   := '0';
   begin
     clock_divider: uart_baud_generator
     generic map (

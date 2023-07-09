@@ -47,8 +47,8 @@ entity uart_baud_generator is
         config: project_config := default_config
     );
     port (
-        clk:           in std_ulogic;
-        frequency_out: out std_ulogic
+        clk:           in std_logic;
+        frequency_out: out std_logic
     );
 end entity uart_baud_generator;
 
@@ -61,8 +61,8 @@ architecture rtl of uart_baud_generator is
 
     --================================== Signals ======================================--
     signal counter:          integer range 0 to max  := 0;
-    signal rise_square_wave: std_ulogic              := '0';
-    signal fall_square_wave: std_ulogic              := '0';
+    signal rise_square_wave: std_logic              := '0';
+    signal fall_square_wave: std_logic              := '0';
 begin
     uart_baud_generator : process(clk)
     begin

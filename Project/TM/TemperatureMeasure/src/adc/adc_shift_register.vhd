@@ -46,14 +46,14 @@ entity adc_shift_register is
         config: project_config := default_config
     );
     port (
-        clk:           in std_ulogic;
-        data_in:       in std_ulogic;
-        data_out:      out std_ulogic_vector(config.data_bits - 1 downto 0)
+        clk:           in std_logic;
+        data_in:       in std_logic;
+        data_out:      out std_logic_vector(config.data_bits - 1 downto 0)
     );
 end entity adc_shift_register;
 
 architecture rtl of adc_shift_register is
-    signal data: std_ulogic_vector(config.data_bits - 1 downto 0) := (others => '0');
+    signal data: std_logic_vector(config.data_bits - 1 downto 0) := (others => '0');
 begin
     SHIFT_REGISTER : process(clk)
     begin
