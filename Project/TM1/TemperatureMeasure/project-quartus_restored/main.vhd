@@ -53,7 +53,28 @@ begin
       measured_value_2 => second_value
     );
   
-  decoder: entity work.decoder7seg
+  --decoder: entity work.decoder7seg
+  --  port map (
+  --  input => first_value(7 downto 0),
+
+  --  a_tens => a_tens,
+  --  b_tens => b_tens,
+  --  c_tens => c_tens,
+  --  d_tens => d_tens,
+  --  e_tens => e_tens,
+  --  f_tens => f_tens,
+  --  g_tens => g_tens,
+
+  --  a_uints => a_units,
+  --  b_uints => b_units,
+  --  c_uints => c_units,
+  --  d_uints => d_units,
+  --  e_uints => e_units,
+  --  f_uints => f_units,
+  --  g_uints => g_units
+  --);
+	 
+	 bcd_decoder: entity work.decoder7segbcd
     port map (
       input => first_value(7 downto 0),
 
