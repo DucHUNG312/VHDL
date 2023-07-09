@@ -79,7 +79,7 @@ begin
       else
         measured_value_2 <= shifting_byte;
       end if;
-        channel <= not channel;
+      -- channel <= not channel;
     end if;
   end process;
   
