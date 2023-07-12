@@ -8,13 +8,13 @@ entity counter is
     clk: in std_logic;
     enable: in std_logic;
     reset: in std_logic;
-    q: out std_logic_vector((bits-1) downto 0);
-    ovf: out std_logic
+    q: out std_logic_vector((bits-1) downto 0)
+    --ovf: out std_logic
   );
 end entity;
 
 architecture arch of counter is
-  constant max: natural := 2**bits - 1;
+  --constant max: natural := 2**bits - 1;
   signal a: unsigned(q'range) := (others => '0');
 begin
   process(clk, enable, reset)
@@ -27,5 +27,5 @@ begin
   end process;
   
   q <= std_logic_vector(a);
-  ovf <= enable when a = max else '0';
+  --ovf <= enable when a = max else '0';
 end architecture;

@@ -1,173 +1,101 @@
--- ==================================================================================================================
--- @author:          Le Vu Duc Hung
---
--- @license:         MIT
---
--- @copyright:       Copyright (c) 2023
---
--- @maintainer:      Le Vu Duc Hung
---
--- @file:            main.vhd
---
--- @date:            15/06/2023
---
--- @description:
--- =============================================================================
--- Permission is hereby granted, free of charge, to any person obtaining
--- a copy of this software and associated documentation files (the
--- "Software"), to deal in the Software without restriction, including
--- without limitation the rights to use, copy, modify, merge, publish,
--- distribute, sublicense, and/or sell copies of the Software, and to
--- permit persons to whom the Software is furnished to do so, subject to
--- the following conditions:
---
--- The above copyright notice and this permission notice shall be
--- included in all copies or substantial portions of the Software.
---
--- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
--- EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
--- MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
--- NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
--- LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
--- OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
--- WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
--- =============================================================================
-
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-use ieee.math_real.all;
-use work.uart_pkg.all;
-use work.adc_pkg.all;
-use work.lcd_pkg.all;
-use work.pwm_pkg.all;
 
 entity main is
-    port (
-        clk :                                 in  std_ulogic;
-        reset:                                in  std_ulogic;
-        adc_data_out:                         in  std_ulogic;
-        adc_clk:                              out std_ulogic;
-        adc_chip_select:                      out std_ulogic;
-        adc_data_in:                          out std_ulogic;
+  port (
+    clk50MHz: in std_logic;
+     
+    clk_adc: out std_logic;
+    cs_adc: out std_logic;
+    di_adc: out std_logic;
+    do_adc: in std_logic;
 
-        a:                                    out std_ulogic;
-        b:                                    out std_ulogic;
-        c:                                    out std_ulogic;
-        d:                                    out std_ulogic;
-        e:                                    out std_ulogic;
-        f:                                    out std_ulogic;
-        g:                                    out std_ulogic;
-        led_green:                            out std_ulogic;
-        led_red:                              out std_ulogic;
+    a_hundreds: out std_logic;
+    b_hundreds: out std_logic;
+    c_hundreds: out std_logic;
+    d_hundreds: out std_logic;
+    e_hundreds: out std_logic;
+    f_hundreds: out std_logic;
+    g_hundreds: out std_logic;
 
-        rx:                                   in  std_ulogic;
-        tx:                                   out std_ulogic;
-        parity_error:                         out std_ulogic;                                                                               
-        framing_error:                        out std_ulogic;                                                                           
-        data_received:                        out std_ulogic;   
-        transmitter_holding_register_empty:   out std_ulogic;                                                      
-        transmitter_register_empty:           out std_ulogic;
-        receiver_holding_register_data_out:   out std_ulogic_vector(adc_default_config.data_bits - 1 downto 0)                                         
-    );
-end entity main;
+    a_tens: out std_logic;
+    b_tens: out std_logic;
+    c_tens: out std_logic;
+    d_tens: out std_logic;
+    e_tens: out std_logic;
+    f_tens: out std_logic;
+    g_tens: out std_logic;
+
+    a_units: out std_logic;
+    b_units: out std_logic;
+    c_units: out std_logic;
+    d_units: out std_logic;
+    e_units: out std_logic;
+    f_units: out std_logic;
+    g_units: out std_logic;
+     
+    tx: out std_logic
+  );
+end entity;
 
 architecture rtl of main is
-
--- =====================================================================================================================================================
--- |                    Signals                     |                                 Data Type                                    |       Value       |
--- =====================================================================================================================================================
-    signal measured_values_1                        :     std_ulogic_vector(adc_default_config.data_bits - 1 downto 0)             := (others => 'X');                                                                       
-    signal measured_values_2                        :     std_ulogic_vector(adc_default_config.data_bits - 1 downto 0)             := (others => 'X');
-    signal data_to_transmit                         :     std_ulogic_vector(adc_default_config.data_bits - 1 downto 0)             := (others => 'X');                               
-    signal dont_transmit                            :     std_ulogic                                                               := '0'; 
-    signal channel                                  :     std_ulogic                                                               := '0'; 
--- =====================================================================================================================================================
-
+  signal first_value: std_logic_vector(7 downto 0) := (others => '0');
+  signal second_value: std_logic_vector(first_value'range) := (others => '0');
+  signal byte_to_transmit: std_logic_vector(first_value'range) := (others => '0');
+  signal channel: std_logic := '0';
 begin
-    --============================================= ADC INSTANCE =============================================--
-    ADC_INST: adc_top 
-    generic map (
-        config              => adc_default_config
-    )
+  adc: entity work.adc_top
+    generic map ( 
+		clk_div => 125
+	 )
     port map (
-        clk_in              => clk,
-        adc_data_out        => adc_data_out,
+      clk_in => clk50MHz,
+      clk_adc => clk_adc,
+      cs_adc => cs_adc,
+      do_adc => do_adc,
+      di_adc => di_adc,
+      measured_value_1 => first_value,
+      measured_value_2 => second_value
+    );
+	 
+	 bcd_decoder: entity work.led_decoder
+    port map (
+      input => first_value(7 downto 0),
 
-        adc_data_in         => adc_data_in,
-        adc_chip_select     => adc_chip_select,
-        adc_clk             => adc_clk,
-        clk_sampling        => open,
-        measured_values_1   => measured_values_1,
-        measured_values_2   => measured_values_2
+      a_hundreds => a_hundreds,
+      b_hundreds => b_hundreds,
+      c_hundreds => c_hundreds,
+      d_hundreds => d_hundreds,
+      e_hundreds => e_hundreds,
+      f_hundreds => f_hundreds,
+      g_hundreds => g_hundreds,
+
+      a_tens => a_tens,
+      b_tens => b_tens,
+      c_tens => c_tens,
+      d_tens => d_tens,
+      e_tens => e_tens,
+      f_tens => f_tens,
+      g_tens => g_tens,
+
+      a_uints => a_units,
+      b_uints => b_units,
+      c_uints => c_units,
+      d_uints => d_units,
+      e_uints => e_units,
+      f_uints => f_units,
+      g_uints => g_units
     );
 
-    --============================================= SEVEN SEGMENT DECODER INSTANCE =============================================--
-    LCD_INST: seven_segment_decoder
+  byte_to_transmit <= second_value when channel = '1' else first_value;
+  serial: entity work.uart_top
     generic map (
-        config              => seven_segment_default_config
+      div => 2604 -- 19200bps
     )
     port map (
-        data_in             => measured_values_1(seven_segment_default_config.data_bits - 1 downto seven_segment_default_config.data_bits - 4),
-        a                   => a,
-        b                   => b,
-        c                   => c,
-        d                   => d,
-        e                   => e,
-        f                   => f,
-        g                   => g
+      clk_in => clk50MHz,
+      data_in => byte_to_transmit,
+      tx => tx
     );
-
-    --============================================= PWM INSTANCE =============================================--
-    --PWM_INST1: pwm
-    --generic map (
-    --    config              => pwm_default_config
-    --)
-    --port map (
-    --    clk_in              => clk,
-    --    ratio               => measured_values_1,
-    --    wave_out            => led_green
-    --);
-
-    --PWM_INST2: pwm
-    --generic map (
-    --    config              => pwm_default_config
-    --)
-    --port map (
-    --    clk_in              => clk,
-    --    ratio               => measured_values_2,
-    --    wave_out            => led_red
-    --);
-
-    --============================================= UART INSTANCE =============================================--
-
-    data_to_transmit <= measured_values_2 when channel = '1' else measured_values_1;
-    
-    UART_INST: uart_top
-        generic map (
-            config                  => uart_default_config
-        )
-        port map (
-            clk                                   => clk,                                                                  
-            reset                                 => reset,                                                                         
-            rxd                                   => rx,                                                                
-            txd                                   => tx, 
-            transmitter_holding_register_data_in  => data_to_transmit,                                                  
-            transmitter_holding_load              => not dont_transmit,
-            receiver_holding_register_data_out    => receiver_holding_register_data_out,                                                    
-            parity_error                          => parity_error,                                                                             
-            framing_error                         => framing_error,                                                                      
-            data_received                         => data_received,                                                      
-            transmitter_holding_register_empty    => transmitter_holding_register_empty,                                                       
-            transmitter_register_empty            => transmitter_register_empty,
-            busy                                  => dont_transmit                                                            
-        );
-
-    -- process(dont_transmit)
-    --    begin
-    --    if rising_edge(dont_transmit) then
-    --        channel <= not channel;
-    --    end if;
-    -- end process;
-
 end architecture rtl;

@@ -4,8 +4,10 @@ use ieee.std_logic_unsigned.all;
 use ieee.numeric_std.all;
 use ieee.math_real.all;
 
-entity decoder7segbcd is
-  generic( inverted_out: boolean := true );
+entity led_decoder is
+  generic( 
+    inverted_out: boolean := true 
+  );
   port (
     input: in std_logic_vector(7 downto 0);
 
@@ -33,18 +35,18 @@ entity decoder7segbcd is
     f_uints: out std_logic;
     g_uints: out std_logic
   );
-end entity decoder7segbcd;
+end entity led_decoder;
 
-architecture arch of decoder7segbcd is
+architecture arch of led_decoder is
 	signal bcd_data: std_logic_vector(9 downto 0);
 	signal decoder_hundreds: std_logic_vector(6 downto 0);
-   signal decoder_tens: std_logic_vector(6 downto 0);
-   signal decoder_uints: std_logic_vector(6 downto 0);
+  signal decoder_tens: std_logic_vector(6 downto 0);
+  signal decoder_uints: std_logic_vector(6 downto 0);
 begin
-   bin2bcd: entity work.bin2bcd
+   bin_to_bcd: entity work.led_bin_to_bcd
     port map (
-      b => input,
-		  p => bcd_data
+      data_in => input,
+      data_bcd_out => bcd_data
     );
 	 
 	 with bcd_data(9 downto 8) select

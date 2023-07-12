@@ -2,10 +2,9 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity freq_divider is
+entity frequency_divider is
   generic (
-    div: natural;
-    ratio_must_be_half: boolean := false
+    div: natural
   );
   port (
     clk_in: in std_logic;
@@ -13,10 +12,9 @@ entity freq_divider is
   );
 end entity;
 
-architecture arch of freq_divider is
-  constant max: natural := div-1;
-  constant half: natural := max/2;
-  -- constant div_is_even: boolean := ((div mod 2) = 0);
+architecture rtl of frequency_divider is
+  constant max: natural := div - 1;
+  constant half: natural := max / 2;
   signal counter: natural range 0 to max := 0;
   signal rise_square_wave: std_logic := '0';
 begin
@@ -37,4 +35,4 @@ begin
   end process;
   
   clk_out <= rise_square_wave;
-end architecture;
+end architecture rtl;

@@ -19,11 +19,11 @@ entity serial_tx is
     stop_bits: Stop_Type := 1
   );
   port (
-    clk_in: in std_logic;
-    transmit: in std_logic;
-    data_in: in std_logic_vector((data_bits-1) downto 0);
-    tx: out std_logic;
-    busy: out std_logic
+    clk_in:   in std_logic;
+    --transmit: in std_logic;
+    data_in:  in std_logic_vector((data_bits-1) downto 0);
+    tx:       out std_logic
+    --busy:     out std_logic
   );
 end entity;
 
@@ -48,10 +48,8 @@ begin
       if state = 0 then
         tx <= '1';
         parity_bit <= '0';
-        if transmit = '1' then
-          state <= state + 1;
-          data <= data_in;
-        end if;
+        state <= state + 1;
+        data <= data_in;
       elsif state = 1 then
         state <= state + 1;
         tx <= '0'; -- start bit
@@ -95,5 +93,5 @@ begin
     end if;
   end process;
   
-  busy <= '0' when state = 0 else '1';
+  --busy <= '0' when state = 0 else '1';
 end architecture;

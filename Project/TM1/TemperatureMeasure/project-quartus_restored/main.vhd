@@ -11,6 +11,14 @@ entity main is
     di_adc: out std_logic;
     do_adc: in std_logic;
 
+    a_hundreds: out std_logic;
+    b_hundreds: out std_logic;
+    c_hundreds: out std_logic;
+    d_hundreds: out std_logic;
+    e_hundreds: out std_logic;
+    f_hundreds: out std_logic;
+    g_hundreds: out std_logic;
+
     a_tens: out std_logic;
     b_tens: out std_logic;
     c_tens: out std_logic;
@@ -27,10 +35,7 @@ entity main is
     f_units: out std_logic;
     g_units: out std_logic;
      
-    tx: out std_logic;
-     
-    led_green: out std_logic;
-    led_red: out std_logic
+    tx: out std_logic
   );
 end entity;
 
@@ -38,7 +43,7 @@ architecture arch of main is
   signal first_value: std_logic_vector(7 downto 0) := (others => '0');
   signal second_value: std_logic_vector(first_value'range) := (others => '0');
   signal byte_to_transmit: std_logic_vector(first_value'range) := (others => '0');
-  signal dont_transmit: std_logic := '0';
+  --signal dont_transmit: std_logic := '0';
   signal channel: std_logic := '0';
 begin
   adc: entity work.adc0832
@@ -78,6 +83,14 @@ begin
     port map (
       input => first_value(7 downto 0),
 
+      a_hundreds => a_hundreds,
+      b_hundreds => b_hundreds,
+      c_hundreds => c_hundreds,
+      d_hundreds => d_hundreds,
+      e_hundreds => e_hundreds,
+      f_hundreds => f_hundreds,
+      g_hundreds => g_hundreds,
+
       a_tens => a_tens,
       b_tens => b_tens,
       c_tens => c_tens,
@@ -102,10 +115,10 @@ begin
     )
     port map (
       clk_in => clk50MHz,
-      transmit => not dont_transmit,
+      --transmit => not dont_transmit,
       data_in => byte_to_transmit,
-      tx => tx,
-      busy => dont_transmit
+      tx => tx
+      --busy => dont_transmit
     );
 
   -- process(dont_transmit)

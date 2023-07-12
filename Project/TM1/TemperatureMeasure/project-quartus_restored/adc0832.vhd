@@ -16,7 +16,7 @@ entity adc0832 is
     -- Sampling clock (not used by the chip, but may be used to synchronize 
     -- to other hardware blocks, such as controllers)
     -- When this signal is zero, the chip is sampling
-    clk_sampling: out std_logic;
+    --clk_sampling: out std_logic;
     measured_value_1: out std_logic_vector(7 downto 0);
     measured_value_2: out std_logic_vector(measured_value_1'range)
   );
@@ -25,7 +25,7 @@ end entity;
 architecture arch of adc0832 is
   constant end_rec_state: natural := 12;
   signal clk: std_logic := '0';
-  signal sampling: std_logic := '0';
+  --signal sampling: std_logic := '0';
   signal state: std_logic_vector(3 downto 0) := (others => '0');
   signal reset_counter: std_logic := '0';
   signal end_reception: std_logic := '0';
@@ -39,17 +39,18 @@ begin
       clk_in => clk_in,
       clk_out => clk
     );
-  sampling_divider: entity work.freq_divider_low
-    generic map ( div => sampling_div )
-    port map (
-      clk_in => clk,
-      clk_out => sampling
-    );
+  --sampling_divider: entity work.freq_divider_low
+  --  generic map ( div => sampling_div )
+  --  port map (
+  --    clk_in => clk,
+  --    clk_out => sampling
+  --  );
 
   process(clk)
   begin
     if rising_edge(clk) then
-      reset_counter <= sampling or (end_reception and (not channel));
+      -- reset_counter <= sampling or (end_reception and (not channel));
+      reset_counter <= end_reception;
     end if;
   end process;
   
@@ -101,5 +102,5 @@ begin
   clk_adc <= clk;
   cs_adc <= reset_counter;
   di_adc <= di;
-  clk_sampling <= sampling;
+  --clk_sampling <= sampling;
 end architecture;

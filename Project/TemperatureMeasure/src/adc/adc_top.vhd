@@ -1,169 +1,98 @@
--- ==================================================================================================================
--- @author:          Le Vu Duc Hung
---
--- @license:         MIT
---
--- @copyright:       Copyright (c) 2023
---
--- @maintainer:      Le Vu Duc Hung
---
--- @file:            adc_top.vhd
---
--- @date:            13/06/2023
---
--- @description:     This file contains the top-level entity and architecture for the ADC0832 module. It implements
---                   the interface and functionality of the ADC module, including clock division, sampling,
---                   state management, data shifting, and output generation. The measured values are output through 
---                   "measured_values_1" and "measured_values_2" ports. 
--- ==================================================================================================================
--- Permission is hereby granted, free of charge, to any person obtaining
--- a copy of this software and associated documentation files (the
--- "Software"), to deal in the Software without restriction, including
--- without limitation the rights to use, copy, modify, merge, publish,
--- distribute, sublicense, and/or sell copies of the Software, and to
--- permit persons to whom the Software is furnished to do so, subject to
--- the following conditions:
---
--- The above copyright notice and this permission notice shall be
--- included in all copies or substantial portions of the Software.
---
--- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
--- EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
--- MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
--- NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
--- LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
--- OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
--- WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
--- ==================================================================================================================
-
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-use work.adc_pkg.all;
 
 entity adc_top is
-    generic (
-        config: adc_config := adc_default_config
-    );
-    port (
-        clk_in:                 in std_ulogic; 
-        adc_data_out:           in std_ulogic;
-
-        adc_data_in:            out std_ulogic;
-        adc_chip_select:        out std_ulogic;
-        adc_clk:                out std_ulogic;
-        clk_sampling:           out std_ulogic; -- Sampling clock (not used by the chip, but may be used to synchronize to other hardware blocks, such as controllers). When this signal is zero, the chip is sampling
-        measured_values_1:      out std_ulogic_vector(config.data_bits - 1 downto 0);
-        measured_values_2:      out std_ulogic_vector(config.data_bits - 1 downto 0)
-    );
-end entity adc_top;
+  generic (
+    clk_div: natural
+  );
+  port (
+    do_adc: in std_logic;
+    clk_in: in std_logic;
+    clk_adc: out std_logic;
+    cs_adc: out std_logic;
+    di_adc: out std_logic;
+    measured_value_1: out std_logic_vector(7 downto 0);
+    measured_value_2: out std_logic_vector(measured_value_1'range)
+  );
+end entity;
 
 architecture rtl of adc_top is
-
--- ===================================================================================================================
--- |        Signals          |                                   Data Type                    |         Value        |
--- ===================================================================================================================
-    signal clk               :       std_ulogic                                               := '0';
-    signal sampling          :       std_ulogic                                               := '0';
-    signal state             :       std_ulogic_vector(3 downto 0)                            := (others => '0');
-    signal reset             :       std_ulogic                                               := '0';
-    signal end_reception     :       std_ulogic                                               := '0';
-    signal shifting_bytes    :       std_ulogic_vector(config.data_bits - 1 downto 0)         := (others => '0');
-    signal channel           :       std_ulogic                                               := '0';
-    signal data_in           :       std_ulogic                                               := '0';
--- ===================================================================================================================
-
+  constant end_rec_state: natural := 12;
+  signal clk: std_logic := '0';
+  signal state: std_logic_vector(3 downto 0) := (others => '0');
+  signal reset_counter: std_logic := '0';
+  signal end_reception: std_logic := '0';
+  signal shifting_byte: std_logic_vector(measured_value_1'range) := (others => '0');
+  signal channel: std_logic := '0';
+  signal di: std_logic := '0';
 begin
-    end_reception <= '1' when (unsigned(state) = to_unsigned(config.end_reception_state, config.state_bits)) else '0';
-
-    --======================================== FREQUENCY_DIVIDER_INSTANCE ==========================================--
-    CLOCK_DIVIDER: adc_frequency_divider
-    generic map (
-        config         => config
+  clock_divider: entity work.frequency_divider
+    generic map ( 
+      div => clk_div 
     )
     port map (
-        clk            => clk_in,
-        frequency_out  => clk
+      clk_in => clk_in,
+      clk_out => clk
     );
 
-
-    --======================================= FREQUENCY_DIVIDER_LOW_INSTANCE ========================================--
-    SAMPLING_DIVIDER: adc_frequency_divider_low
-    generic map (
-        config         => config
+  process(clk)
+  begin
+    if rising_edge(clk) then
+      reset_counter <= end_reception;
+    end if;
+  end process;
+  
+  counter: entity work.adc_counter
+    generic map ( 
+      bits => state'length 
     )
     port map (
-        clk            => clk,
-        frequency_out  => sampling
+      clk => clk,
+      enable => not end_reception,
+      reset => reset_counter,
+      count_out => state
     );
-
-    --============================================ ADC_COUNTER_INSTANCE ===============================================--
-    COUNTER: adc_counter 
-    generic map (
-        config         => config
+  
+  shift_register: entity work.adc_shift_register
+    generic map ( 
+      bits => shifting_byte'length 
     )
     port map (
-        clk            => clk,
-        reset          => reset,
-        enable         => not end_reception,
-        count_out      => state,
-        overflow       => open
+      clk => clk,
+      input => do_adc,
+      output => shifting_byte
     );
-
-    
-    --========================================= ADC_SHIFT_REGISTER_INSTANCE ============================================--
-    SHIFT_REGISTER: adc_shift_register
-    generic map (
-        config         => config
-    )
-    port map (
-        clk            => clk,
-        data_in        => adc_data_out,
-        data_out       => shifting_bytes
-    );
-
-    -- RESET_SIGNAL
-    RESET_SIGNAL: process(clk)
-    begin
-        if rising_edge(clk) then
-            reset <= sampling or (end_reception and (not channel)); 
+  
+  end_reception <= '1' when (unsigned(state) = to_unsigned(end_rec_state, state'length)) else '0';
+  process(end_reception)
+  begin
+    if rising_edge(end_reception) then
+      if channel = '0' then
+        measured_value_1 <= shifting_byte;
+      else
+        measured_value_2 <= shifting_byte;
+      end if;
+      -- channel <= not channel;
+    end if;
+  end process;
+  
+  process(clk)
+  begin
+    if falling_edge(clk) then
+       if unsigned(state) = to_unsigned(0, state'length) then
+          di <= '1'; -- start bit
+        elsif unsigned(state) = to_unsigned(1, state'length) then
+          di <= '1'; -- SGL/DIF
+        elsif unsigned(state) = to_unsigned(2, state'length) then
+          di <= channel; -- ODD/SIGN
+        else
+          di <= 'X';
         end if;
-    end process RESET_SIGNAL; 
-    
-   
-    -- STORE_DATA
-    STORE_DATA: process(end_reception)
-    begin
-        if rising_edge(end_reception) then
-            if channel = '0' then
-                measured_values_1 <= shifting_bytes;
-            else
-                measured_values_2 <= shifting_bytes;
-            end if;
-            channel <= not channel; -- alternately stored data in the 2 channels
-        end if;
-    end process STORE_DATA; 
-
-    -- ADC_STATE
-    ADC_STATE: process(clk)
-    begin
-        if rising_edge(clk) then
-            if unsigned(state) = to_unsigned(0, config.state_bits) then
-                data_in <= '1'; -- start bit
-            elsif unsigned(state) = to_unsigned(1, config.state_bits) then
-                data_in <= '1'; -- SGL (Single-Ended)
-            elsif unsigned(state) = to_unsigned(2, config.state_bits) then
-                data_in <= channel; -- ODD/EVEN
-            else
-                data_in <= 'X';
-            end if;
-        end if; 
-    end process ADC_STATE; 
-
-    -- Connect IO
-    adc_clk <= clk;
-    adc_chip_select <= reset;
-    adc_data_in <= data_in;
-    clk_sampling <= sampling;
-
+     end if;
+  end process;
+  
+  clk_adc <= clk;
+  cs_adc <= reset_counter;
+  di_adc <= di;
 end architecture rtl;
