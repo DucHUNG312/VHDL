@@ -51,9 +51,10 @@ begin
 	 
 	 with bcd_data(9 downto 8) select
       decoder_hundreds  <=  "0111111" when "00", -- 0
-									          "0000110" when "01", -- 1
-									          "1011011" when "10", -- 2
-									          "1001111" when "11"; -- 3
+                            "0000110" when "01", -- 1
+                            "1011011" when "10", -- 2
+                            "1001111" when "11", -- 3
+                            "1111111" when others;
 									      
 	
     with bcd_data(7 downto 4) select
@@ -89,7 +90,6 @@ begin
     e_hundreds  <= not decoder_hundreds(4)  when inverted_out else decoder_hundreds(4);
     f_hundreds  <= not decoder_hundreds(5)  when inverted_out else decoder_hundreds(5);
     g_hundreds  <= not decoder_hundreds(6)  when inverted_out else decoder_hundreds(6);
-
 
     a_tens  <= not decoder_tens(0)  when inverted_out else decoder_tens(0);
     b_tens  <= not decoder_tens(1)  when inverted_out else decoder_tens(1);
