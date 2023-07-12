@@ -20,15 +20,15 @@ begin
 			bcd_decoded(i):='0';
 		end loop;
 		
-		bcd_decoded(10 downto 3):= data_in;
+		bcd_decoded(10 downto 3) := data_in;
 		for i in 0 to 4 loop
 			if bcd_decoded(11 downto 8) > 4 then	
-				bcd_decoded(11 downto 8) := bcd_decoded(11 downto 8 ) + 3;
+				bcd_decoded(11 downto 8) := bcd_decoded(11 downto 8) + 3;
 			end if;
 			if bcd_decoded(15 downto 12) > 4 then 
 				bcd_decoded(15 downto 12) := bcd_decoded(15 downto 12) + 3;
 			end if;
-			bcd_decoded(17 downto 1 ):= bcd_decoded(16 downto 0);
+			bcd_decoded(17 downto 1) := bcd_decoded(16 downto 0);
 		end loop;
 		
 		data_bcd_out <= bcd_decoded(17 downto 8);
