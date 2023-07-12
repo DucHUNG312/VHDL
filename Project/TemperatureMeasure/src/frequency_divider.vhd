@@ -2,9 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
--- This frequency divider keeps the output signal in low state most of the time
--- For only one cycle of the input clock the output clock is in high state
-entity freq_divider_low is
+entity frequency_divider is
   generic (
     div: natural
   );
@@ -14,23 +12,27 @@ entity freq_divider_low is
   );
 end entity;
 
-architecture arch of freq_divider_low is
-  constant max: natural := div-1;
+architecture rtl of frequency_divider is
+  constant max: natural := div - 1;
+  constant half: natural := max / 2;
   signal counter: natural range 0 to max := 0;
-  signal o: std_logic := '0';
+  signal rise_square_wave: std_logic := '0';
 begin
   process(clk_in)
   begin
     if rising_edge(clk_in) then
       if counter = max then
         counter <= 0;
-        o <= '1';
       else
         counter <= counter + 1;
-        o <= '0';
+      end if;
+      if counter > half then
+        rise_square_wave <= '1';
+      else
+        rise_square_wave <= '0';
       end if;
     end if;
   end process;
   
-  clk_out <= o;
-end architecture;
+  clk_out <= rise_square_wave;
+end architecture rtl;
