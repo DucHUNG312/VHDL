@@ -41,7 +41,7 @@ begin
                 stateMoore_next <= VHD;
             elsif ascii_code = "01010110" then -- V
                 stateMoore_next <= V;
-            elsif ascii_code /= "01001000" then -- H
+            else
                 stateMoore_next <= Init;
             end if; 
         when VHD =>
@@ -49,7 +49,7 @@ begin
                 stateMoore_next <= VHDL;
             elsif ascii_code = "01010110" then -- V
                 stateMoore_next <= V;
-            elsif ascii_code /= "01000100" then -- D
+            else
                 stateMoore_next <= Init;
             end if; 
         when VHDL =>
